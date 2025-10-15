@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>Nossa Heroina</title>
+   <script src="animacao.js"></script> 
+   <script src="teclado.js"></script> 
+   <script src="heroina.js"></script>
+   <script src="spritesheet.js"></script> 
+   
+</head>
+
+<body>
+   <canvas id="canvas_heroina" width="500" height="500"></canvas>
+   <script>
+      var canvas = document.getElementById('canvas_heroina');
+      var context = canvas.getContext('2d');
+
+      var teclado = new Teclado(document); 
+      var animacao = new Animacao(context); 
+
+      var imgSonic = new Image(); 
+      imgSonic.src = 'imagem/kitsune-sprite-sheet.png'; 
+
+      var sonic = new Sonic(context, teclado, imgSonic, animacao);
+      sonic.x = 200; 
+      sonic.y = 200; 
+      animacao.novoSprite(sonic);
+
+     // teclado.disparou(ESPACO, function() {
+    //sonic.atirar();
+    //});
+
+      imgSonic.onload = function() {
+         animacao.ligar();
+      }
+   </script>
+</body>
+
+</html>
