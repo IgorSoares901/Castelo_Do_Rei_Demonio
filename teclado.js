@@ -10,35 +10,34 @@ function Teclado(elemento) {
    this.pressionadas = [];
 
    // Array de teclas disparadas
-   this.disparadas = [];
+   // this.disparadas = []; desnecessária para nosso jogo
 
    // Funções de disparo registradas
-   this.funcoesDisparo = [];
+  // this.funcoesDisparo = []; tbm inutil
 
    var teclado = this;
 
    elemento.addEventListener('keydown', function(evento) {
-      var tecla = evento.keyCode;  // Tornando mais legível ;)
-      teclado.pressionadas[tecla] = true;
+     teclado.pressionadas[evento.keyCode] = true;
 
       // Disparar somente se for o primeiro keydown da tecla
-      if (teclado.funcoesDisparo[tecla] && !teclado.disparadas[tecla]) {
+    //  if (teclado.funcoesDisparo[tecla] && !teclado.disparadas[tecla]) {
 
-          teclado.disparadas[tecla] = true;
-          teclado.funcoesDisparo[tecla] () ;
-      }
+        //  teclado.disparadas[tecla] = true;
+        //  teclado.funcoesDisparo[tecla] () ;
+     // } tudo isso desnecessário
    });
 
    elemento.addEventListener('keyup', function(evento) {
       teclado.pressionadas[evento.keyCode] = false;
-      teclado.disparadas[evento.keyCode] = false;
+      // teclado.disparadas[evento.keyCode] = false; Rest in piss
    });
 }
 Teclado.prototype = {
    pressionada: function(tecla) {
       return this.pressionadas[tecla];
-   },
-   disparou: function(tecla, callback) {
-      this.funcoesDisparo[tecla] = callback;
    }
+  // disparou: function(tecla, callback) {
+    //  this.funcoesDisparo[tecla] = callback;
+  // } vai atirar não
 }

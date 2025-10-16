@@ -4,6 +4,12 @@ var HEROINA_ESQUERDA = 2;
 
 var HEROINA_PULANDO = 3;
 
+var HEROINA_PULANDO_DIREITA = 4;
+
+var HEROINA_PULANDO_ESQUERDA = 5;
+
+var HEROINA_ATAQUE = 6;
+
 
 function Sonic(context, teclado, imagem) { 
 
@@ -39,8 +45,73 @@ function Sonic(context, teclado, imagem) {
 
 Sonic.prototype = {
     atualizar: function() {
-        // ANDAR PARA DIREITA
+    // o pulo teve que vir primeiro senão bugava tudo
+if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
+
+    this.pulando = true;
+
+    this.velocidadeY = -10; // isso aqui é a força inicial do pulo
+
+    this.yInicial = this.y;  // ta gravando onde fica o chão
+
+    this.alturaMaxima = this.yInicial - 75; // altura máxima que eu coloquei para o pulo
+
+    this.sheet.linha = 0;  
+
+    this.sheet.coluna = 0; // linha e coluna da animação de pulo
+}
+
+// Física para ela pular com gravidade
+if (this.pulando) {
+    this.y += this.velocidadeY;
+    this.velocidadeY += 0.5; // gravidade quanto maior mais rapido ela vai cair
+
+    if(this.teclado.pressionada(SETA_DIREITA)) {
+        this.x += this.velocidade * 0.7; // fica mais lenta no ar
+        this.direcao = HEROINA_DIREITA;
+        this.estado = HEROINA_PULANDO_DIREITA;
+    }
+
+    else if(this.teclado.pressionada(SETA_ESQUERDA)) {
+        this.x -= this.velocidade * 0.7;
+        this.direcao = HEROINA_ESQUERDA;
+        this.estado = HEROINA_PULANDO_ESQUERDA;
+    }
+
+    // Sobe usando os frames 0 ate o 5
+    if (this.velocidadeY < 0) {
+        const progresso = (this.yInicial - this.y) / 75;
+        this.sheet.coluna = Math.min(5, Math.floor(progresso * 5)); // o Math.min é para não passar do frame 5 e o Math.floor é arredondando de cima para baixo
+    }
+    // Desce usando os frames frames 5 até 9
+    else {
+        const progresso = (this.y - this.alturaMaxima) / 75;
+        this.sheet.coluna = 5 + Math.min(4, Math.floor(progresso * 5)); // funciona igual o de cima
+    }
+
+    // Chegou ao chão
+    if (this.y >= this.yInicial) {
+        this.y = this.yInicial;
+        this.velocidadeY = 0;
+        this.pulando = false;
+
+        // Retorna à animação anterior quando ela chegar no chão
+        this.sheet.coluna = 0;
+
         if (this.teclado.pressionada(SETA_DIREITA)) {
+            this.sheet.linha = 2; // andar direita
+        } else if (this.teclado.pressionada(SETA_ESQUERDA)) {
+            this.sheet.linha = 2; // andar esquerda (espelhar no draw)
+        } else {
+            this.sheet.linha = 1; // idle
+        }
+    }
+
+    // Sai do atualizar pq senão quebra e buga tudo UwU
+    return;
+}
+        // ANDAR PARA DIREITA
+       else if (this.teclado.pressionada(SETA_DIREITA)) {
             if (!this.andando || this.direcao !== HEROINA_DIREITA) {
                 this.sheet.linha = 2;   // linha 1: andar
                 this.sheet.coluna = 0;
