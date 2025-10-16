@@ -2,7 +2,7 @@ var HEROINA_DIREITA = 1;
 
 var HEROINA_ESQUERDA = 2;
 
-var HEROINA_SUBINDO = 3;
+var HEROINA_PULANDO = 3;
 
 
 function Sonic(context, teclado, imagem) { 
@@ -42,7 +42,7 @@ Sonic.prototype = {
         // ANDAR PARA DIREITA
         if (this.teclado.pressionada(SETA_DIREITA)) {
             if (!this.andando || this.direcao !== HEROINA_DIREITA) {
-                this.sheet.linha = 1;   // linha 1: andar
+                this.sheet.linha = 2;   // linha 1: andar
                 this.sheet.coluna = 0;
             }
             this.andando = true;
@@ -54,7 +54,7 @@ Sonic.prototype = {
         // ANDAR PARA ESQUERDA (espelhado)
         else if (this.teclado.pressionada(SETA_ESQUERDA)) {
             if (!this.andando || this.direcao !== HEROINA_ESQUERDA) {
-                this.sheet.linha = 1;   // mesma linha da direita
+                this.sheet.linha = 2;   // mesma linha da direita
                 this.sheet.coluna = 0;
             }
             this.andando = true;
@@ -68,7 +68,7 @@ Sonic.prototype = {
             this.andando = false;
 
             // Linha 0: animação de idle
-            this.sheet.linha = 0;
+            this.sheet.linha = 1;
             this.sheet.proximoQuadro();
         }
     },

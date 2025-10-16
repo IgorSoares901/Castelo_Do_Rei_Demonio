@@ -7,7 +7,7 @@ function Spritesheet(context, imagem, linhas, colunas) {
     this.linha = 0;
     this.coluna = 0;
 
-    this.framesPorLinha = [8, 8, 10, 10, 8, 8]; // tive que colocar esse inferno pra ele reconhecer os quadros certinho kkkk
+    this.framesPorLinha = [10, 8, 8, 7, 2, 10]; // tive que colocar esse inferno pra ele reconhecer os quadros certinho kkkk
 }
 
 Spritesheet.prototype = {
