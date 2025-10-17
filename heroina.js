@@ -31,7 +31,7 @@ function Sonic(context, teclado, imagem) {
 
    this.sheet = new Spritesheet(context, imagem, 6,10);
 
-   this.sheet.intervalo = 60;
+   this.sheet.intervalo = 120; // velocidade da animação
 
 
 
@@ -67,13 +67,13 @@ if (this.pulando) {
     this.velocidadeY += 0.5; // gravidade quanto maior mais rapido ela vai cair
 
     if(this.teclado.pressionada(SETA_DIREITA)) {
-        this.x += this.velocidade * 0.7; // fica mais lenta no ar
+        this.x += this.velocidade * 0.9; // fica mais lenta no ar
         this.direcao = HEROINA_DIREITA;
         this.estado = HEROINA_PULANDO_DIREITA;
     }
 
     else if(this.teclado.pressionada(SETA_ESQUERDA)) {
-        this.x -= this.velocidade * 0.7;
+        this.x -= this.velocidade * 0.9;
         this.direcao = HEROINA_ESQUERDA;
         this.estado = HEROINA_PULANDO_ESQUERDA;
     }
