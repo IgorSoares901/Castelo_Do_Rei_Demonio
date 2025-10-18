@@ -25,6 +25,10 @@ function Sonic(context, teclado, imagem) {
 
    this.velocidade = 4;
 
+   this.atacando = false;
+
+   this.frameAtaque = 0;
+
 
 
    // Criando a spritesheet a partir da imagem recebida
@@ -110,6 +114,41 @@ if (this.pulando) {
     // Sai do atualizar pq senão quebra e buga tudo UwU
     return;
 }
+
+
+        // Ataque em si
+        if (this.teclado.pressionada(ESPACO) && !this.atacando && !this.pulando) {
+            this.atacando = true;
+            this.sheet.linha = 3; // Linha onde começa o ataque
+            this.sheet.coluna = 0; // Primeiro quadro do ataque
+            this.frameAtaque = 0; // Contador de frames do ataque
+        }
+
+        // o avance dos quadros de ataque
+        if(this.atacando) {
+            if (++this.frameAtaque % 3 === 0) {
+                this.sheet.coluna++;
+            } // Esse % serve tanto para controlar a velocidade do ataque e quanto maior for o número mais lenta ela vai ser
+
+            // final dos quadros de ataque
+            if (this.sheet.coluna > 6) {
+                this.sheet.coluna = 0;
+                this.atacando = false // quando chegar no ultimo quadro de ataque termina
+
+                // código para ela poder voltar ao estado anterior ao ataque
+                if (this.teclado.pressionada(SETA_DIREITA)) {
+                    this.sheet.linha = 2;
+                } else if (this.teclado.pressionada(SETA_ESQUERDA)) {
+                    this.sheet.linha = 2;
+                } else {
+                    this.sheet.linha = 1;
+                }
+            } 
+
+            return; // impede outras animações enquanto ataca
+
+        }
+
         // ANDAR PARA DIREITA
        else if (this.teclado.pressionada(SETA_DIREITA)) {
             if (!this.andando || this.direcao !== HEROINA_DIREITA) {
