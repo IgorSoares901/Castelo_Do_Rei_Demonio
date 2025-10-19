@@ -33,7 +33,8 @@ function Sonic(context, teclado, imagem) {
 
    // Criando a spritesheet a partir da imagem recebida
 
-   this.sheet = new Spritesheet(context, imagem, 6,10);
+   this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10]); // tive que colocar o array aqui dentro para definir os frames somente dela
+   
 
    this.sheet.intervalo = 120; // velocidade da animação
 
@@ -84,12 +85,12 @@ if (this.pulando) {
 
     // Sobe usando os frames 0 ate o 5
     if (this.velocidadeY < 0) {
-        const progresso = (this.yInicial - this.y) / 75;
+        const progresso = (this.yInicial - this.y) / 75; // é a altura máxima do pulo
         this.sheet.coluna = Math.min(5, Math.floor(progresso * 5)); // o Math.min é para não passar do frame 5 e o Math.floor é arredondando de cima para baixo
     }
     // Desce usando os frames frames 5 até 9
     else {
-        const progresso = (this.y - this.alturaMaxima) / 75;
+        const progresso = (this.y - this.alturaMaxima) / 75; 
         this.sheet.coluna = 5 + Math.min(4, Math.floor(progresso * 5)); // funciona igual o de cima
     }
 
@@ -126,12 +127,12 @@ if (this.pulando) {
 
         // o avance dos quadros de ataque
         if(this.atacando) {
-            if (++this.frameAtaque % 3 === 0) {
+            if (++this.frameAtaque % 2 !== 0) {
                 this.sheet.coluna++;
             } // Esse % serve tanto para controlar a velocidade do ataque e quanto maior for o número mais lenta ela vai ser
 
             // final dos quadros de ataque
-            if (this.sheet.coluna > 6) {
+            if (this.sheet.coluna > 9) {
                 this.sheet.coluna = 0;
                 this.atacando = false // quando chegar no ultimo quadro de ataque termina
 

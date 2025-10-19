@@ -1,4 +1,4 @@
-function Spritesheet(context, imagem, linhas, colunas) {
+function Spritesheet(context, imagem, linhas, colunas, framesPorLinha = []) {
     this.context = context;
     this.imagem = imagem;
     this.numLinhas = linhas;
@@ -6,8 +6,7 @@ function Spritesheet(context, imagem, linhas, colunas) {
     this.intervalo = 0;
     this.linha = 0;
     this.coluna = 0;
-
-    this.framesPorLinha = [10, 8, 8, 7, 2, 10]; // tive que colocar esse inferno pra ele reconhecer os quadros certinho kkkk
+    this.framesPorLinha = framesPorLinha; // tive que criar esse construtor para definir corretamento o de todos os personagens
 }
 
 Spritesheet.prototype = {
