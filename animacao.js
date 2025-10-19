@@ -7,6 +7,13 @@ function Animacao(context) {
     novoSprite: function(sprite) {
        this.sprites.push(sprite);
     },
+
+    excluirSprite: function(sprite) {
+      var indice = this.sprites.indexOf(sprite);
+      if (indice !== -1) {
+         this.sprites.splice(indice, 1);
+      }
+    }, // tive que adicionar toda essa function para o arqueiro não desaparecer junto com a flecha
     ligar: function() {
        this.ligado = true;
        this.proximoFrame();
