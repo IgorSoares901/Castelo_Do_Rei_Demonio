@@ -19,9 +19,9 @@ function Sonic(context, teclado, imagem) {
 
    this.animacao = animacao;
 
-   this.x = 0; 
+   this.x = 200; 
 
-   this.y = 0; 
+   this.y = 200; // mudei as posições para cá ao inves de no heroina.html
 
    this.velocidade = 4;
 
