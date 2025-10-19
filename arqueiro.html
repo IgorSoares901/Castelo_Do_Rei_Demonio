@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Esqueleto Arqueiro</title>
+    <script src="animacao.js"></script>
+    <script src="spritesheet.js"></script>
+    <script src="arqueiro.js"></script>
+</head>
+<body>
+    <canvas id = "arqueiro_canvas" width = "500" height="500"></canvas>
+    <script>
+    const canvas = document.getElementById('arqueiro_canvas'); 
+    const context = canvas.getContext('2d');
+
+    const imagemArqueiro = new Image();
+    imagemArqueiro.src = 'imagem/esqueleto-arqueiro.png';
+
+    imagemArqueiro.onload = function() {
+        const animacao = new Animacao(context);
+        const arqueiro = new Arqueiro(context, imagemArqueiro, animacao);
+
+        animacao.novoSprite(arqueiro);
+        animacao.ligar();
+    }
+    </script>
+</body>
+</html>
