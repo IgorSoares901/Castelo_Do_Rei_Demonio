@@ -34,7 +34,6 @@ function Sonic(context, teclado, imagem) {
    // Criando a spritesheet a partir da imagem recebida
 
    this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10]); // tive que colocar o array aqui dentro para definir os frames somente dela
-   
 
    this.sheet.intervalo = 120; // velocidade da animação
 
