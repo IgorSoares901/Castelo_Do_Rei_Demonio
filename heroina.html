@@ -7,6 +7,7 @@
    <script src="teclado.js"></script> 
    <script src="heroina.js"></script>
    <script src="spritesheet.js"></script> 
+   <script src="colisor.js"></script>
    
 </head>
 
@@ -18,12 +19,15 @@
 
       var teclado = new Teclado(document); 
       var animacao = new Animacao(context); 
+      var colisor = new Colisor(); // colisor adicionado
+      animacao.colisor = colisor; //vincula os colisores
 
       var imgSonic = new Image(); 
       imgSonic.src = 'imagem/kitsune-sprite-sheet.png'; 
 
       var sonic = new Sonic(context, teclado, imgSonic, animacao);
       animacao.novoSprite(sonic);
+      colisor.novoSprite(sonic); // registro do sprite no detector de colisão
 
      // teclado.disparou(ESPACO, function() {
     //sonic.atirar();

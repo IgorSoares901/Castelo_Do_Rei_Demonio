@@ -17,6 +17,7 @@ function Animacao(context) {
     ligar: function() {
        this.ligado = true;
        this.proximoFrame();
+       
     },
     desligar: function() {
        this.ligado = false;
@@ -35,6 +36,9 @@ function Animacao(context) {
        // Desenhamos os sprites
        for (var i in this.sprites)
           this.sprites[i].desenhar();
+
+       // processa colisão entre os sprites
+       if (this.colisor) this.colisor.processar();
  
        // Chamamos o próximo ciclo
        var animacao = this;
