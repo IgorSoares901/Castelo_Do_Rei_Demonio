@@ -186,6 +186,70 @@ if (this.pulando) {
     desenhar: function() {
         // Espelha automaticamente se estiver olhando pra esquerda
         this.sheet.desenhar(this.x, this.y, this.direcao === HEROINA_ESQUERDA);
+
+        // Desenha o retângulo para colisão (debug)
+         // retangulo para debug
+        var ctx = this.context;
+        ctx.save();
+        ctx.strokeStyle = 'purple';
+        var rets = this.retangulosColisao();
+        for (var i in rets) {
+            var r = rets[i];
+            ctx.strokeRect(r.x, r.y, r.largura, r.altura);
+        }
+        ctx.restore();
+    },
+
+    // colisão 
+    retangulosColisao: function() {
+        var rets = [];
+
+        // retangulo principal da heroina
+        rets.push({
+            x: this.x + 45,
+                y: this.y + 60,
+                largura: 30,
+                altura: 70
+        });
+
+        // retangulo da hitbox do ataque
+        if(this.atacando && this.sheet.linha === 3) {
+            // o retangulo só aparece a partir do frame 7 do ataque
+            if(this.sheet.coluna >=7) {
+                var larguraHitbox = 30;
+                var alturaHitbox = 50;
+
+                // cresce um pouco no frame 9
+                if (this.sheet.coluna >= 9) {
+                    larguraHitbox = 48;
+                    alturaHitbox = 40;
+                }
+
+                // posição depende da direção da kitsune
+                if (this.direcao === HEROINA_DIREITA) {
+                    rets.push({
+                        x: this.x + 80, // na frente dela
+                        y: this.y + 80,
+                        largura: larguraHitbox,
+                        altura: alturaHitbox
+                    });
+                } else {
+                    rets.push({
+                        x: this.x - larguraHitbox + 45, // na frente, espelhado
+                        y: this.y + 80,
+                        largura: larguraHitbox,
+                        altura: alturaHitbox
+                    });
+                }
+            }
+        }
+
+        return rets;
+
+    },
+
+    colidiuCom: function(outro) {
+        console.log('Colidiu com outro', outro);
     }
 };
 
