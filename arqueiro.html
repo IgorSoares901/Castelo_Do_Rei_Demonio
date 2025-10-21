@@ -7,22 +7,30 @@
     <script src="animacao.js"></script>
     <script src="spritesheet.js"></script>
     <script src="flecha.js"></script>
+    <script src="colisor.js"></script>
     <script src="arqueiro.js"></script>
 </head>
 <body>
     <canvas id = "arqueiro_canvas" width = "500" height="500"></canvas>
     <script>
-    const canvas = document.getElementById('arqueiro_canvas'); 
-    const context = canvas.getContext('2d');
+    var canvas = document.getElementById('arqueiro_canvas'); 
+    var context = canvas.getContext('2d');
+    
+    var colisor = new Colisor();
+    var animacao = new Animacao(context);
+    animacao.colisor = colisor;
 
-    const imagemArqueiro = new Image();
+    var imagemArqueiro = new Image();
     imagemArqueiro.src = 'imagem/esqueleto-arqueiro.png';
 
     imagemArqueiro.onload = function() {
-        const animacao = new Animacao(context);
-        const arqueiro = new Arqueiro(context, imagemArqueiro, animacao);
+        var arqueiro = new Arqueiro(context, imagemArqueiro, animacao);
 
+        // adiciona arqueiro e animação ao colisor
         animacao.novoSprite(arqueiro);
+        colisor.novoSprite(arqueiro);
+
+        // inicia o loop
         animacao.ligar();
     }
     </script>

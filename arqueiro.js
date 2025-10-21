@@ -66,5 +66,30 @@ Arqueiro.prototype = {
 
   desenhar: function () {
     this.sheet.desenhar(this.x, this.y, true);
+    var ctx = this.context;
+    ctx.save();
+    ctx.strokeStyle = 'purple'; 
+    var rets = this.retangulosColisao();
+    for (var i in rets) {
+     var r = rets[i];
+   ctx.strokeRect(r.x, r.y, r.largura, r.altura);
+}
+    ctx.restore();
   },
+
+  retangulosColisao: function() {
+  var rets = [];
+
+  // retangulo de colisão do arqueiro
+  rets.push({
+    x: this.x + 45,
+    y: this.y + 60,
+    largura: 35,
+    altura: 70
+  });
+  return rets;
+},
+colidiuCom: function(outro) {
+  console.log("arqueiro colidiu", outro)
+},
 };

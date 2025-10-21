@@ -207,9 +207,9 @@ if (this.pulando) {
         // retangulo principal da heroina
         rets.push({
             x: this.x + 45,
-                y: this.y + 60,
-                largura: 30,
-                altura: 70
+            y: this.y + 60,
+            largura: 30,
+            altura: 70
         });
 
         // retangulo da hitbox do ataque
@@ -235,9 +235,9 @@ if (this.pulando) {
                     });
                 } else {
                     rets.push({
-                        x: this.x - larguraHitbox + 45, // na frente, espelhado
+                        x: this.x - larguraHitbox + 40, // na frente, espelhado
                         y: this.y + 80,
-                        largura: larguraHitbox,
+                        largura: larguraHitbox = 40,
                         altura: alturaHitbox
                     });
                 }
