@@ -33,7 +33,7 @@ function Sonic(context, teclado, imagem) {
 
    // Criando a spritesheet a partir da imagem recebida
 
-   this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10]); // tive que colocar o array aqui dentro para definir os frames somente dela
+   this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10], 0.7); // tive que colocar o array aqui dentro para definir os frames somente dela
 
    this.sheet.intervalo = 120; // velocidade da animação
 
@@ -206,10 +206,10 @@ if (this.pulando) {
 
         // retangulo principal da heroina
         rets.push({
-            x: this.x + 45,
-            y: this.y + 60,
+            x: this.x + 25,
+            y: this.y + 40,
             largura: 30,
-            altura: 70
+            altura: 50
         });
 
         // retangulo da hitbox do ataque
@@ -217,27 +217,27 @@ if (this.pulando) {
             // o retangulo só aparece a partir do frame 7 do ataque
             if(this.sheet.coluna >=7) {
                 var larguraHitbox = 30;
-                var alturaHitbox = 50;
+                var alturaHitbox = 30;
 
                 // cresce um pouco no frame 9
                 if (this.sheet.coluna >= 9) {
-                    larguraHitbox = 48;
-                    alturaHitbox = 40;
+                    larguraHitbox = 35;
+                    alturaHitbox = 35;
                 }
 
                 // posição depende da direção da kitsune
                 if (this.direcao === HEROINA_DIREITA) {
                     rets.push({
-                        x: this.x + 80, // na frente dela
-                        y: this.y + 80,
+                        x: this.x + 60, // na frente dela
+                        y: this.y + 50,
                         largura: larguraHitbox,
                         altura: alturaHitbox
                     });
                 } else {
                     rets.push({
-                        x: this.x - larguraHitbox + 40, // na frente, espelhado
-                        y: this.y + 80,
-                        largura: larguraHitbox = 40,
+                        x: this.x - larguraHitbox + 35, // na frente, espelhado
+                        y: this.y + 50,
+                        largura: larguraHitbox = 20,
                         altura: alturaHitbox
                     });
                 }

@@ -5,7 +5,7 @@ function Flecha(context, imagem, x, y, velocidade) {
 
     this.x = x;
 
-    this.y = y;
+    this.y = 230;
 
     this.velocidade = velocidade;
 
