@@ -54,7 +54,7 @@ if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 
     this.pulando = true;
 
-    this.velocidadeY = -9; // isso aqui é a força inicial do pulo
+    this.velocidadeY = -8; // isso aqui é a força inicial do pulo
 
     this.yInicial = this.y;  // ta gravando onde fica o chão
 
@@ -68,7 +68,7 @@ if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 // Física para ela pular com gravidade
 if (this.pulando) {
     this.y += this.velocidadeY;
-    this.velocidadeY += 0.5; // gravidade quanto maior mais rapido ela vai cair
+    this.velocidadeY += 0.45; // gravidade quanto maior mais rapido ela vai cair
 
     if(this.teclado.pressionada(SETA_DIREITA)) {
         this.x += this.velocidade * 1.0; // fica mais lenta no ar

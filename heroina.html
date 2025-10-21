@@ -30,7 +30,7 @@
       imgSonic.src = 'imagem/kitsune-sprite-sheet.png'; 
 
       var sonic = new Sonic(context, teclado, imgSonic, animacao);
-       sonic.x = 0; 
+       sonic.x = -20; 
       sonic.y = 319
       animacao.novoSprite(sonic);
       colisor.novoSprite(sonic); // registro do sprite no detector de colisão
@@ -44,7 +44,7 @@
      
       //definir largura e altura do mapa pra ver se n da merda
         
-         width: 3500,
+         width: 5000,
          height: 500,
 
          atualizar: function() {
