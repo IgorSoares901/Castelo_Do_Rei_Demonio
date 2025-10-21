@@ -5,7 +5,7 @@ function Arqueiro(context, imagem, animacao) {
   this.x = 250;
   this.y = 200;
 
-  this.sheet = new Spritesheet(context, imagem, 3, 15, [7, 15, 5], 0.7);
+  this.sheet = new Spritesheet(context, imagem, 3, 15, [7, 15, 5], 0.6);
   this.sheet.intervalo = 120; // velocidade da animação
 
   this.estado = "idle";
@@ -82,10 +82,10 @@ Arqueiro.prototype = {
 
   // retangulo de colisão do arqueiro
   rets.push({
-    x: this.x + 30,
-    y: this.y + 44,
-    largura: 35,
-    altura: 50
+    x: this.x + 25,
+    y: this.y + 40,
+    largura: 30,
+    altura: 37
   });
   return rets;
 },
