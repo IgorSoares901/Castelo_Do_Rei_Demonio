@@ -8,6 +8,7 @@
    <script src="heroina.js"></script>
    <script src="spritesheet.js"></script> 
    <script src="colisor.js"></script>
+   <link rel="stylesheet" href="styles.css">
    
 </head>
 
@@ -22,13 +23,38 @@
       var colisor = new Colisor(); // colisor adicionado
       animacao.colisor = colisor; //vincula os colisores
 
+      var imgMapa = new Image();
+      imgMapa.src = 'imagem/mapa-principal.png'
+
       var imgSonic = new Image(); 
       imgSonic.src = 'imagem/kitsune-sprite-sheet.png'; 
 
       var sonic = new Sonic(context, teclado, imgSonic, animacao);
+       sonic.x = 0; 
+      sonic.y = 319
       animacao.novoSprite(sonic);
       colisor.novoSprite(sonic); // registro do sprite no detector de colisão
 
+      //colocar mapa como fundo
+      var mapa = {
+         context: context,
+         imagem: imgMapa,
+         x: 0,
+         y: 19,
+     
+      //definir largura e altura do mapa pra ver se n da merda
+        
+         width: 3500,
+         height: 500,
+
+         atualizar: function() {
+            // pro mapa n fazer nada
+         },
+         desenhar: function() {
+            this.context.drawImage(this.imagem, this.x, this.y);
+         }
+      };
+      animacao.inserirFundo(mapa,0);
      // teclado.disparou(ESPACO, function() {
     //sonic.atirar();
     //});

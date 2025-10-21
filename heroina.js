@@ -19,11 +19,11 @@ function Sonic(context, teclado, imagem) {
 
    this.animacao = animacao;
 
-   this.x = 200; 
+   this.x = 0; 
 
-   this.y = 200; // mudei as posições para cá ao inves de no heroina.html
+   this.y = 0; // mudei as posições para cá ao inves de no heroina.html
 
-   this.velocidade = 4;
+   this.velocidade = 2.3;
 
    this.atacando = false;
 
@@ -33,7 +33,7 @@ function Sonic(context, teclado, imagem) {
 
    // Criando a spritesheet a partir da imagem recebida
 
-   this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10], 0.7); // tive que colocar o array aqui dentro para definir os frames somente dela
+   this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10], 0.65); // tive que colocar o array aqui dentro para definir os frames somente dela
 
    this.sheet.intervalo = 120; // velocidade da animação
 
@@ -54,7 +54,7 @@ if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 
     this.pulando = true;
 
-    this.velocidadeY = -10; // isso aqui é a força inicial do pulo
+    this.velocidadeY = -9; // isso aqui é a força inicial do pulo
 
     this.yInicial = this.y;  // ta gravando onde fica o chão
 
@@ -71,13 +71,13 @@ if (this.pulando) {
     this.velocidadeY += 0.5; // gravidade quanto maior mais rapido ela vai cair
 
     if(this.teclado.pressionada(SETA_DIREITA)) {
-        this.x += this.velocidade * 0.9; // fica mais lenta no ar
+        this.x += this.velocidade * 1.0; // fica mais lenta no ar
         this.direcao = HEROINA_DIREITA;
         this.estado = HEROINA_PULANDO_DIREITA;
     }
 
     else if(this.teclado.pressionada(SETA_ESQUERDA)) {
-        this.x -= this.velocidade * 0.9;
+        this.x -= this.velocidade * 1.0;
         this.direcao = HEROINA_ESQUERDA;
         this.estado = HEROINA_PULANDO_ESQUERDA;
     }
@@ -191,7 +191,7 @@ if (this.pulando) {
          // retangulo para debug
         var ctx = this.context;
         ctx.save();
-        ctx.strokeStyle = 'purple';
+        ctx.strokeStyle = 'white';
         var rets = this.retangulosColisao();
         for (var i in rets) {
             var r = rets[i];
@@ -209,7 +209,7 @@ if (this.pulando) {
             x: this.x + 25,
             y: this.y + 40,
             largura: 30,
-            altura: 50
+            altura: 42
         });
 
         // retangulo da hitbox do ataque
@@ -221,21 +221,21 @@ if (this.pulando) {
 
                 // cresce um pouco no frame 9
                 if (this.sheet.coluna >= 9) {
-                    larguraHitbox = 35;
+                    larguraHitbox = 25;
                     alturaHitbox = 35;
                 }
 
                 // posição depende da direção da kitsune
                 if (this.direcao === HEROINA_DIREITA) {
                     rets.push({
-                        x: this.x + 60, // na frente dela
+                        x: this.x + 55, // na frente dela
                         y: this.y + 50,
                         largura: larguraHitbox,
                         altura: alturaHitbox
                     });
                 } else {
                     rets.push({
-                        x: this.x - larguraHitbox + 35, // na frente, espelhado
+                        x: this.x - larguraHitbox + 30, // na frente, espelhado
                         y: this.y + 50,
                         largura: larguraHitbox = 20,
                         altura: alturaHitbox
