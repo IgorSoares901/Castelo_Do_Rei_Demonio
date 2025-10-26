@@ -8,6 +8,7 @@ function Arqueiro(context, imagem, animacao, camera) {
 
   this.velocidadeY = 0; // gravidade
   this.noChao = false;
+  this.hitboxAtiva = true;
 
   // mexe na hitbox desse arrombado
   this.largura = 22;   // tamanho horizontal da colisão
@@ -135,7 +136,7 @@ if (this.y > 500) {
 }
 
 // colisao com o ataque da heroina
-if (window.heroina) {
+if (this.hitboxAtiva && window.heroina) {
   const ataque = window.heroina.retanguloAtaque();
   if (ataque) {
     if (
@@ -155,6 +156,11 @@ morrer: function () {
   this.sheet.linha = 2;
   this.sheet.coluna = 0;
   this.frameAtaque = 0;
+  this.hitboxAtiva = false; // desativa a hitbox quando morrer
+  this.largura = 0;
+  this.altura = 0;
+
+  console.log("Arqueiro começou a morrer!");
 },
 
  desenhar: function () {

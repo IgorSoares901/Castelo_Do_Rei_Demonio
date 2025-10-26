@@ -37,18 +37,18 @@ Flecha.prototype = {
       };
 
       if (
-  hb.x < h.x + h.largura &&
-  hb.x + hb.largura > h.x &&
-  hb.y < h.y + h.altura &&
-  hb.y + hb.altura > h.y
-) {
-  console.log("Heroína atingida pela flecha!");
-  this.animacao.excluirSprite(this);
-  if (!window.heroina.invencivel) {
-    window.heroina.tomarDano();
-  }
-  return;
-}
+      hb.x < h.x + h.largura &&
+      hb.x + hb.largura > h.x &&
+      hb.y < h.y + h.altura &&
+      hb.y + hb.altura > h.y
+    ) {
+      console.log("Heroína atingida pela flecha!");
+      this.animacao.excluirSprite(this);
+      if (!window.heroina.invencivel) {
+        window.heroina.tomarDano();
+      }
+      return;
+    }
 
     }
 
