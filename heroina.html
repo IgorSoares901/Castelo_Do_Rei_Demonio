@@ -2,14 +2,15 @@
 <html>
 
 <head>
-   <title>Nossa Heroina</title>
+   <title>Personagem controlável e animado</title>
+   <script src="spritesheet.js"></script> 
    <script src="animacao.js"></script> 
    <script src="teclado.js"></script> 
    <script src="heroina.js"></script>
-   <script src="spritesheet.js"></script> 
    <script src="colisor.js"></script>
+   <script src="flecha.js"></script>
+   <script src="arqueiro.js"></script>
    <link rel="stylesheet" href="styles.css">
-   
 </head>
 
 <body>
@@ -20,22 +21,142 @@
 
       var teclado = new Teclado(document); 
       var animacao = new Animacao(context); 
-      var colisor = new Colisor(); // colisor adicionado
-      animacao.colisor = colisor; //vincula os colisores
 
       var imgMapa = new Image();
-      imgMapa.src = 'imagem/mapa-principal.png'
+      imgMapa.src = 'imagem/mapa-principal-2.png'
 
       var imgSonic = new Image(); 
-      imgSonic.src = 'imagem/kitsune-sprite-sheet.png'; 
+      imgSonic.src = 'imagem/kitsune-sprite-sheet.png';
 
-      var sonic = new Sonic(context, teclado, imgSonic, animacao);
-       sonic.x = -20; 
-      sonic.y = 319
+      var imgArqueiro = new Image();
+      imgArqueiro.src = "imagem/esqueleto-arqueiro.png";
+
+      var sonic = new Sonic(context, teclado, imgSonic);
+      sonic.x = -15; 
+      sonic.y = 300; 
       animacao.novoSprite(sonic);
-      colisor.novoSprite(sonic); // registro do sprite no detector de colisão
+      window.heroina = sonic;
 
-      //colocar mapa como fundo
+// colisor
+var colisor = new Colisor(context, sonic);
+
+// blocos ajustados pro canvas 5000 x 500 
+// primeiros numeros são a posição direita e esquerda
+// segundo numero é a posicão cima baixo
+// terceiro numero é a largura
+// quarto numero é a altura
+colisor.adicionarBloco(0, 402, 5000, 50, "chao"); // chão
+colisor.adicionarBloco(0, 0, 5, 500, "parede");  // extremidade inicial
+colisor.adicionarBloco(4990, 0, 10, 500, "parede");  // extremidade final
+colisor.adicionarBloco(55, 336, 82, 15, "plataforma"); // plataforma 1
+colisor.adicionarBloco(137, 325, 207, 17, "plataforma"); // plataforma 2
+colisor.adicionarBloco(232, 293, 17, 105, "parede");  // parede 1
+colisor.adicionarBloco(345, 336, 95, 17, "plataforma"); // plataforma 3
+colisor.adicionarBloco(1056, 336, 80, 17, "plataforma"); // plataforma 4
+colisor.adicionarBloco(1137, 325, 207, 17, "plataforma"); // plataforma 5
+colisor.adicionarBloco(1232, 293, 17, 105, "parede");  // parede 2
+colisor.adicionarBloco(1345, 336, 95, 17, "plataforma"); // plataforma 6
+colisor.adicionarBloco(1479, 310, 22, 5, "plataforma"); // plataforma mini 2 logo
+colisor.adicionarBloco(1495, 300, 5, 5, "plataforma"); // plataforma mini 3
+colisor.adicionarBloco(1500, 290, 30, 5, "plataforma"); // plataforma mini 4
+colisor.adicionarBloco(1547, 290, 15, 5, "plataforma"); // plataforma mini 5
+colisor.adicionarBloco(1547, 291, 1450, 2, "chao"); // chão de cima
+colisor.adicionarBloco(3640, 327, 25, 80, "parede");  // parede 3
+colisor.adicionarBloco(3738, 327, 25, 80, "parede");  // parede 4
+colisor.adicionarBloco(3883, 327, 25, 80, "parede");  // parede 5
+colisor.adicionarBloco(3968, 327, 25, 80, "parede");  // parede 6
+colisor.adicionarBloco(4259, 374, 35, 30, "parede");  // escada 1
+colisor.adicionarBloco(4290, 346, 35, 30, "parede");  // escada 2
+colisor.adicionarBloco(4322, 316, 35, 30, "parede");  // escada 3
+colisor.adicionarBloco(4352, 286, 35, 30, "parede");  // escada 4
+colisor.adicionarBloco(4382, 256, 30, 30, "parede");  // escada 5
+colisor.adicionarBloco(4382, 260, 650, 30, "chao"); // chão final
+colisor.adicionarBloco(4500, 13, 10, 206, "parede");  // parede chefe
+colisor.adicionarBloco(4536, 203, 47, 15, "plataforma"); // plataforma chefe
+colisor.adicionarBloco(4619, 175, 47, 15, "plataforma"); // plataforma mini 2
+colisor.adicionarBloco(4690, 174, 47, 15, "plataforma"); // plataforma mini 3
+colisor.adicionarBloco(4780, 174, 47, 15, "plataforma"); // plataforma mini 4
+colisor.adicionarBloco(4850, 174, 47, 15, "plataforma"); // plataforma mini 5
+colisor.adicionarBloco(4915, 202, 47, 15, "plataforma"); // plataforma mini 6
+colisor.adicionarBloco(4500, 13, 500, 10, "plataforma"); // teto chefe
+
+var camera = {
+  x: 0,
+  y: 0,
+  largura: canvas.width,
+  altura: canvas.height,
+  mundoLargura: 5000,
+  mundoAltura: 500
+}; // tive que criar a variavel da camera para o arqueiro saber da existencia dela
+
+imgArqueiro.onload = function() {
+   window.arqueiros = [];
+   // tive que criar um array para arqueiros
+   
+   // tive que colocar a camera dentro de todos os arqueiros
+   // arqueiro 1
+  const arqueiro1 = new Arqueiro(context, imgArqueiro, animacao, camera);
+  arqueiro1.x = 70; // posiçoes iniciais
+  arqueiro1.y = 240;
+  arqueiro1.colisor = colisor; // colisor do arqueiro
+  animacao.novoSprite(arqueiro1);
+  arqueiros.push(arqueiro1);
+   
+  //arqueiro 2
+  const arqueiro2 = new Arqueiro(context, imgArqueiro, animacao, camera);
+  arqueiro2.x = 270; // posiçoes iniciais
+  arqueiro2.y = 227;
+  arqueiro2.colisor = colisor; // colisor do arqueiro
+  animacao.novoSprite(arqueiro2);
+  arqueiros.push(arqueiro2);
+
+  //arqueiro 3
+  const arqueiro3 = new Arqueiro(context, imgArqueiro, animacao, camera);
+  arqueiro3.x = 1160; // posiçoes iniciais
+  arqueiro3.y = 227;
+  arqueiro3.colisor = colisor; // colisor do arqueiro
+  animacao.novoSprite(arqueiro3);
+  arqueiros.push(arqueiro3);
+
+  //arqueiro 4
+  const arqueiro4 = new Arqueiro(context, imgArqueiro, animacao, camera);
+  arqueiro4.x = 1360; // posiçoes iniciais
+  arqueiro4.y = 240;
+  arqueiro4.colisor = colisor; // colisor do arqueiro
+  animacao.novoSprite(arqueiro4);
+  arqueiros.push(arqueiro4);
+
+  //arqueiro 5
+  const arqueiro5 = new Arqueiro(context, imgArqueiro, animacao, camera);
+  arqueiro5.x = 3203; // posiçoes iniciais
+  arqueiro5.y = 280;
+  arqueiro5.colisor = colisor; // colisor do arqueiro
+  animacao.novoSprite(arqueiro5);
+  arqueiros.push(arqueiro5);
+
+  //arqueiro 5
+  const arqueiro6 = new Arqueiro(context, imgArqueiro, animacao, camera);
+  arqueiro6.x = 3500; // posiçoes iniciais
+  arqueiro6.y = 280;
+  arqueiro6.colisor = colisor; // colisor do arqueiro
+  animacao.novoSprite(arqueiro6);
+  arqueiros.push(arqueiro6);
+
+};
+
+
+// integrar o colisor à animação
+animacao.novoSprite({
+  atualizar: function () {
+    colisor.checarColisoes();
+    
+  },
+  desenhar: function () {
+    colisor.desenhar(); // mostra blocos coloridos
+  }
+});
+
+//colocar mapa como fundo
       var mapa = {
          context: context,
          imagem: imgMapa,
@@ -55,9 +176,6 @@
          }
       };
       animacao.inserirFundo(mapa,0);
-     // teclado.disparou(ESPACO, function() {
-    //sonic.atirar();
-    //});
 
       imgSonic.onload = function() {
          animacao.ligar();
