@@ -1,85 +1,119 @@
-//arquivo colisor.js
-function Colisor() {
-   this.sprites = [];
-   this.aoColidir = null;
+function Colisor(context, heroina) {
+  this.context = context;
+  this.heroina = heroina;
+  this.blocos = []; // blocos do cenário
 }
+
 Colisor.prototype = {
-   novoSprite: function(sprite) {
-      this.sprites.push(sprite);
-   },
-   processar: function() {
-      // Inicio com um objeto vazio
-      var jaTestados = new Object();
+  // adiciona um bloco (parede, chão, plataforma)
+  adicionarBloco: function (x, y, largura, altura, tipo) {
+    this.blocos.push({ x, y, largura, altura, tipo });
+  },
 
-      for (var i in this.sprites) {
-         for (var j in this.sprites) {
-            // Não colidir um sprite com ele mesmo
-            if (i == j) continue;
+  checarColisoes: function () {
+    const h = {
+      x: this.heroina.x + 27, // posição da hitbox
+      y: this.heroina.y + 37,
+      largura: 20,
+      altura: 42,
+      
+    };
 
-            // Gerar strings únicas para os objetos
-            var id1 = this.stringUnica(this.sprites[i]);
-            var id2 = this.stringUnica(this.sprites[j]);
+    let noChao = false;
 
-            // Criar os arrays se não existirem
-            if (! jaTestados[id1]) jaTestados[id1] = [];
-            if (! jaTestados[id2]) jaTestados[id2] = [];
+    for (const b of this.blocos) {
+      const colide =
+        h.x < b.x + b.largura &&
+        h.x + h.largura > b.x &&
+        h.y < b.y + b.altura &&
+        h.y + h.altura > b.y;
 
-            // Teste de repetição
-            if (! (jaTestados[id1].indexOf(id2) >= 0 ||
-                   jaTestados[id2].indexOf(id1) >= 0) ) {
+      if (colide) {
+        // determinar o eixo de menor sobreposição
+        const overlapX =
+          h.x + h.largura / 2 - (b.x + b.largura / 2);
+        const overlapY =
+          h.y + h.altura / 2 - (b.y + b.altura / 2);
 
-               // Abstrair a colisão
-               this.testarColisao(this.sprites[i], this.sprites[j]);
-               
-               // Registrando o teste
-               jaTestados[id1].push(id2);
-               jaTestados[id2].push(id1);
-            }
-         }
-      }
-   },
-   testarColisao: function(sprite1, sprite2) {
-      // Obter os retângulos de colisão de cada sprite
-      var rets1 = sprite1.retangulosColisao();
-      var rets2 = sprite2.retangulosColisao();
+        const halfWidths = (h.largura + b.largura) / 2;
+        const halfHeights = (h.altura + b.altura) / 2;
 
-      // Testar as colisões entre eles
-      colisoes:
-      for (var i in rets1) {
-         for (var j in rets2) {
-            // Abstraindo a fórmula!
-            if (this.retangulosColidem(rets1[i], rets2[j])) {
-               // Eles colidem, vamos notificá-los
-               sprite1.colidiuCom(sprite2);
-               sprite2.colidiuCom(sprite1);
-               
-               // Tratador geral
-               if (this.aoColidir) this.aoColidir(sprite1, sprite2);
-               
-               // Não precisa terminar de ver todos os retângulos
-               break colisoes;
-            }
-         }
-      }
-   },
-   retangulosColidem: function(ret1, ret2) {
-      // Fórmula de interseção de retângulos
-      return (ret1.x + ret1.largura) > ret2.x &&
-             ret1.x < (ret2.x + ret2.largura) &&
-             (ret1.y + ret1.altura) > ret2.y &&
-             ret1.y < (ret2.y + ret2.altura);
-   },
-   stringUnica: function(sprite) {
-      var str = '';
-      var retangulos = sprite.retangulosColisao();
+       const dx = halfWidths - Math.abs(overlapX);
+const dy = halfHeights - Math.abs(overlapY);
 
-      for (var i in retangulos) {
-         str += 'x:' + retangulos[i].x + ',' +
-                'y:' + retangulos[i].y + ',' +
-                'l:' + retangulos[i].largura + ',' +
-                'a:' + retangulos[i].altura + '\n';
-      }
-
-      return str;
-   }
+if (dx < dy) {
+  // --- COLISÃO HORIZONTAL (paredes) ---
+  if (overlapX > 0) {
+    // heroína à direita do bloco → empurra para a direita
+    this.heroina.x += dx;
+  } else {
+    // heroína à esquerda do bloco → empurra para a esquerda
+    this.heroina.x -= dx;
+  }
+} else {
+  // --- COLISÃO VERTICAL (chão ou teto) ---
+  if (overlapY > 0) {
+    // heroína abaixo do bloco → bateu a cabeça
+    this.heroina.y += dy;
+    this.heroina.velocidadeY = 0;
+  } else {
+    // heroína acima do bloco → está no chão
+    this.heroina.y -= dy;
+    this.heroina.velocidadeY = 0;
+    this.heroina.pulando = false;
+    noChao = true;
+  }
 }
+      }
+    }
+    // gravidade
+    if (!noChao) {
+      this.heroina.velocidadeY = (this.heroina.velocidadeY || 0) + 0.5;
+      this.heroina.y += this.heroina.velocidadeY;
+    }
+  },
+
+  // desenha blocos (debug visual)
+  desenhar: function () {
+   const ctx = this.context;
+
+  // === desenha blocos do cenário ===
+  for (const b of this.blocos) {
+    ctx.fillStyle =
+      b.tipo === "chao"
+        ? "brown"
+        : b.tipo === "parede"
+        ? "darkred"
+        : "purple"; // plataforma
+    ctx.fillRect(b.x, b.y, b.largura, b.altura);
+  }
+
+  // === desenha hitbox da heroína (debug) ===
+  const h = {
+    x: this.heroina.x + 27, // mesmos valores do checarColisoes
+    y: this.heroina.y + 37,
+    largura: 20,
+    altura: 45,
+  };
+
+  // contorno
+  ctx.strokeStyle = "cyan";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(h.x, h.y, h.largura, h.altura);
+
+  // centro do retângulo
+  ctx.fillStyle = "aqua";
+  ctx.beginPath();
+  ctx.arc(h.x + h.largura / 2, h.y + h.altura / 2, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // opcional: mostrar posição e dimensões na tela
+  ctx.font = "10px monospace";
+  ctx.fillStyle = "white";
+  ctx.fillText(
+    `x:${Math.round(h.x)} y:${Math.round(h.y)} w:${h.largura} h:${h.altura}`,
+    h.x,
+    h.y - 5
+  );
+}
+};

@@ -17,11 +17,9 @@ function Sonic(context, teclado, imagem) {
 
    this.teclado = teclado; 
 
-   this.animacao = animacao;
-
    this.x = 0; 
 
-   this.y = 0; // mudei as posições para cá ao inves de no heroina.html
+   this.y = 0; 
 
    this.velocidade = 2.3;
 
@@ -29,7 +27,12 @@ function Sonic(context, teclado, imagem) {
 
    this.frameAtaque = 0;
 
+   this.hitboxAtaque = null; // retangulo do golpe atual
 
+   this.hitboxAtaqueDireita = { x: 0, y: 0, largura: 40, altura: 40};
+   this.hitboxAtaqueEsquerda = { x: 0, y: 0, largura: 40, altura: 40};
+
+   this.danoAtivo = false; // indica se o ataque pode causar dano
 
    // Criando a spritesheet a partir da imagem recebida
 
@@ -47,18 +50,19 @@ function Sonic(context, teclado, imagem) {
 
 } 
 
-Sonic.prototype = {
-    atualizar: function() {
+Sonic.prototype = { 
+
+   atualizar: function() {
     // o pulo teve que vir primeiro senão bugava tudo
 if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 
     this.pulando = true;
 
-    this.velocidadeY = -8; // isso aqui é a força inicial do pulo
+    this.velocidadeY = -10; // isso aqui é a força inicial do pulo
 
     this.yInicial = this.y;  // ta gravando onde fica o chão
 
-    this.alturaMaxima = this.yInicial - 75; // altura máxima que eu coloquei para o pulo
+    this.alturaMaxima = this.yInicial - 50; // altura máxima que eu coloquei para o pulo
 
     this.sheet.linha = 0;  
 
@@ -68,16 +72,16 @@ if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 // Física para ela pular com gravidade
 if (this.pulando) {
     this.y += this.velocidadeY;
-    this.velocidadeY += 0.45; // gravidade quanto maior mais rapido ela vai cair
+    this.velocidadeY += 0.3; // gravidade quanto maior mais rapido ela vai cair
 
     if(this.teclado.pressionada(SETA_DIREITA)) {
-        this.x += this.velocidade * 1.0; // fica mais lenta no ar
+        this.x += this.velocidade * 1.3; // fica mais lenta no ar
         this.direcao = HEROINA_DIREITA;
         this.estado = HEROINA_PULANDO_DIREITA;
     }
 
     else if(this.teclado.pressionada(SETA_ESQUERDA)) {
-        this.x -= this.velocidade * 1.0;
+        this.x -= this.velocidade * 1.3;
         this.direcao = HEROINA_ESQUERDA;
         this.estado = HEROINA_PULANDO_ESQUERDA;
     }
@@ -115,8 +119,7 @@ if (this.pulando) {
     return;
 }
 
-
-        // Ataque em si
+// Ataque em si
         if (this.teclado.pressionada(ESPACO) && !this.atacando && !this.pulando) {
             this.atacando = true;
             this.sheet.linha = 3; // Linha onde começa o ataque
@@ -129,6 +132,25 @@ if (this.pulando) {
             if (++this.frameAtaque % 2 !== 0) {
                 this.sheet.coluna++;
             } // Esse % serve tanto para controlar a velocidade do ataque e quanto maior for o número mais lenta ela vai ser
+
+            // ativa a hitbox do ataque entre os frames 5 e 9
+        if(this.sheet.coluna >= 5 && this.sheet.coluna <= 9) {
+            this.danoAtivo = true;
+
+           if (this.direcao === HEROINA_DIREITA) {
+            this.hitboxAtaqueDireita.x = this.x + 20 // posição base
+            this.hitboxAtaqueDireita.y = this.y + 50;
+            this.hitboxAtaqueDireita.largura = (this.sheet.coluna === 9) ? 65 : 50 // cresce no frame 9 o ? é um if else
+            this.hitboxAtaqueDireita.altura = 30;
+        } else {
+            this.hitboxAtaqueEsquerda.x = this.x + 0;  // posição mais à esquerda
+            this.hitboxAtaqueEsquerda.y = this.y + 50;
+            this.hitboxAtaqueEsquerda.largura = (this.sheet.coluna === 9) ? 50 : 50;
+            this.hitboxAtaqueEsquerda.altura = 30;
+        }
+    } else {
+        this.danoAtivo = false;
+    }
 
             // final dos quadros de ataque
             if (this.sheet.coluna > 9) {
@@ -181,76 +203,41 @@ if (this.pulando) {
             this.sheet.linha = 1;
             this.sheet.proximoQuadro();
         }
-    },
-
-    desenhar: function() {
-        // Espelha automaticamente se estiver olhando pra esquerda
-        this.sheet.desenhar(this.x, this.y, this.direcao === HEROINA_ESQUERDA);
-
-        // Desenha o retângulo para colisão (debug)
-         // retangulo para debug
-        var ctx = this.context;
-        ctx.save();
-        ctx.strokeStyle = 'white';
-        var rets = this.retangulosColisao();
-        for (var i in rets) {
-            var r = rets[i];
-            ctx.strokeRect(r.x, r.y, r.largura, r.altura);
-        }
-        ctx.restore();
-    },
-
-    // colisão 
-    retangulosColisao: function() {
-        var rets = [];
-
-        // retangulo principal da heroina
-        rets.push({
-            x: this.x + 25,
-            y: this.y + 40,
-            largura: 30,
-            altura: 42
-        });
-
-        // retangulo da hitbox do ataque
-        if(this.atacando && this.sheet.linha === 3) {
-            // o retangulo só aparece a partir do frame 7 do ataque
-            if(this.sheet.coluna >=7) {
-                var larguraHitbox = 30;
-                var alturaHitbox = 30;
-
-                // cresce um pouco no frame 9
-                if (this.sheet.coluna >= 9) {
-                    larguraHitbox = 25;
-                    alturaHitbox = 35;
-                }
-
-                // posição depende da direção da kitsune
-                if (this.direcao === HEROINA_DIREITA) {
-                    rets.push({
-                        x: this.x + 55, // na frente dela
-                        y: this.y + 50,
-                        largura: larguraHitbox,
-                        altura: alturaHitbox
-                    });
-                } else {
-                    rets.push({
-                        x: this.x - larguraHitbox + 30, // na frente, espelhado
-                        y: this.y + 50,
-                        largura: larguraHitbox = 20,
-                        altura: alturaHitbox
-                    });
-                }
-            }
-        }
-
-        return rets;
 
     },
 
-    colidiuCom: function(outro) {
-        console.log('Colidiu com outro', outro);
+   desenhar: function() { 
+ // Espelha automaticamente se estiver olhando pra esquerda
+        this.sheet.desenhar(this.x, this.y, this.direcao === HEROINA_ESQUERDA);      
+        // desenhar hitboxes de ataque (debug)
+const ctx = this.context;
+ctx.save();
+ctx.lineWidth = 2;
+
+if (this.danoAtivo) {
+    if (this.direcao === HEROINA_DIREITA) {
+        const h = this.hitboxAtaqueDireita;
+        ctx.strokeStyle = "red";
+        ctx.strokeRect(h.x, h.y, h.largura, h.altura);
+    } else {
+        const h = this.hitboxAtaqueEsquerda;
+        ctx.strokeStyle = "orange";
+        ctx.strokeRect(h.x, h.y, h.largura, h.altura);
     }
-};
+}
 
-    
+ctx.restore();
+
+},
+retanguloAtaque: function () {
+    if (!this.danoAtivo) return null; // só dano ao atacar
+    if (this.direcao === HEROINA_DIREITA) {
+        const h = this.hitboxAtaqueDireita;
+        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
+    } else {
+        const h = this.hitboxAtaqueEsquerda;
+        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
+    }
+}
+
+}
