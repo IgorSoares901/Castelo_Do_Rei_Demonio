@@ -40,7 +40,13 @@ function Sonic(context, teclado, imagem) {
 
    this.sheet.intervalo = 120; // velocidade da animação
 
+   this.hp = 5; // total de hp, tem que mudar no respawn tbm!!!!
 
+   this.viva = true;
+
+   this.morrendo = false;
+
+   this.vidas = 3; // total de vidas
 
    // Estado inicial
 
@@ -50,8 +56,11 @@ function Sonic(context, teclado, imagem) {
 
    // dano
    this.recebendoDano = false;
+
    this.invencivel = 0;
+
    this.frameDano = 0;
+
    this.alphaPiscar = 1; // ela vai ficar piscando após receber dano
 
 } 
@@ -59,13 +68,14 @@ function Sonic(context, teclado, imagem) {
 Sonic.prototype = { 
 
    atualizar: function() {
+    if (!this.viva) return;
     //invencibilidade
-    if (this.invencivel) {
-        // pisca
-        this.alphaPiscar = (Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1; // a cada 100 milesegundos ela ira piscar
-        // se o tempo acabar
-        if (Date.now() > this.tempoInvencivel) {
-            this.invencivel = false;
+        if (this.invencivel) {
+    // pisca quando leva ataque
+    this.alphaPiscar = (Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1; // a cada 100 milesegundos ela ira piscar
+    // enquanto esta piscando ela é invencivel
+         if (Date.now() > this.tempoInvencivel) {
+    this.invencivel = false;
             this.alphaPiscar = 1;
         }
     }
@@ -77,13 +87,22 @@ Sonic.prototype = {
         if (this.sheet.coluna >= 2) {
             this.sheet.coluna = 0;
             this.recebendoDano = false;
-            this.invencivel = true;
-            this.tempoInvencivel = Date.now() + 1500; // 1.5 segundos de invencibilidade
         }
         }
         return; // não faz nada enquanto leva dano
     }
 
+    // morte 
+    if (this.morrendo) {
+        if (++this.frameDano % 6 === 0) this.sheet.coluna++;
+        if (this.sheet.coluna >=10) {
+            this.viva = false;
+            this.morrendo = false;
+            console.log('Morreu');
+        }
+            return;
+        }
+        
     // verifica colisões com a flecha e o arqueiro
     if (!this.invencivel) {
         // flechas
@@ -292,10 +311,17 @@ if (this.pulando) {
 
     // funcao de tomar dano
     tomarDano: function() {
-  if (this.recebendoDano || this.invencivel) return;
+  if (this.recebendoDano || this.invencivel || this.morrendo || !this.viva) return;
   
+  this.hp--;
+
+  if(this.hp <= 0) {
+    this.morrer();
+    return; // se o hp chegar em 0 ela morre
+  }
+
   this.recebendoDano = true;
-  this.sheet.linha = 5; // linha da animação de dano
+  this.sheet.linha = 4; // linha da animação de dano
   this.sheet.coluna = 0;
   this.frameDano = 0;
 
@@ -304,18 +330,77 @@ if (this.pulando) {
   this.x += direcaoKnock;
   this.y -= 5; // leve impulso pra cima
 
-  console.log("Heroína tomou dano!");
+  this.invencivel = true;
+  this.tempoInvencivel = Date.now() + 1500;
+  this.alphaPiscar = 1; // invencibilidade dela
+
+  console.log('Heroína tomou dano! Vida restante: ${this.hp}');
 },
+
+morrer: function() {
+    if(this.morrendo || !this.viva) return;
+    this.morrendo = true;
+    this.recebendoDano = false;
+    this.atacando = false;
+    this.invencivel = false;
+    this.sheet.linha = 5;
+    this.sheet.coluna = 0;
+    this.frameDano = 0;
+    console.log("virou camisa de saudade")
+
+    const duracaoAnim = 1000; // tempo pra ela reaparecer
+    setTimeout(() => {
+    this.viva = false;
+    this.morrendo = false;
+    this.vidas--;
+        if (this.vidas > 0) {
+            this.respawn(); // reaparece no mesmo lugar
+        } else {
+            console.log("Jogo acabou.");
+        }
+    }, duracaoAnim);
+},
+
+respawn: function() {
+    console.log("Respawna");
+
+    this.viva = true;
+    this.morrendo = false;
+    this.recebendoDano = false;
+    this.invencivel = false;
+    this.hp = 5; // tem que mudar o hp aqui tbm no respawn
+    this.velocidadeY = 0;
+
+    // volta para idle
+    this.sheet.linha = 1;
+    this.sheet.coluna = 0;
+
+    // invencível por 1 segundo ao reaparecer
+    this.invencivel = true;
+    this.tempoInvencivel = Date.now() + 1000;
+},
+
+retanguloAtaque: function () {
+    if (!this.danoAtivo) return null; // só dano ao atacar
+    if (this.direcao === HEROINA_DIREITA) {
+        const h = this.hitboxAtaqueDireita;
+        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
+    } else {
+        const h = this.hitboxAtaqueEsquerda;
+        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
+    }
+}, 
+
    desenhar: function () {
   const ctx = this.context;
 
-  // --- desenha a sprite com possível efeito de piscar (invencibilidade) ---
+  // desenha a sprite
   ctx.save();
   ctx.globalAlpha = this.invencivel ? this.alphaPiscar : 1;
   this.sheet.desenhar(this.x, this.y, this.direcao === HEROINA_ESQUERDA);
   ctx.restore();
 
-  // --- debug: hitbox de ataque ---
+  // debug da hitbox de ataque 
   ctx.save();
   ctx.lineWidth = 2;
 
@@ -333,15 +418,6 @@ if (this.pulando) {
 
   ctx.restore();
 },
-retanguloAtaque: function () {
-    if (!this.danoAtivo) return null; // só dano ao atacar
-    if (this.direcao === HEROINA_DIREITA) {
-        const h = this.hitboxAtaqueDireita;
-        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
-    } else {
-        const h = this.hitboxAtaqueEsquerda;
-        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
-    }
-}
+
 
 }
