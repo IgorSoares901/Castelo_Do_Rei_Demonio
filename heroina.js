@@ -156,6 +156,60 @@ Sonic.prototype = {
             }
         }
     }
+
+    // Ataque em si
+        if (this.teclado.pressionada(ESPACO) && !this.atacando && !this.pulando) {
+            this.atacando = true;
+            this.sheet.linha = 3; // Linha onde começa o ataque
+            this.sheet.coluna = 0; // Primeiro quadro do ataque
+            this.frameAtaque = 0; // Contador de frames do ataque
+        }
+
+        // o avance dos quadros de ataque
+        if(this.atacando) {
+            if (++this.frameAtaque % 2 !== 0) {
+                this.sheet.coluna++;
+            } // Esse % serve tanto para controlar a velocidade do ataque e quanto maior for o número mais lenta ela vai ser
+
+            // ativa a hitbox do ataque entre os frames 5 e 9
+        if(this.sheet.coluna >= 5 && this.sheet.coluna <= 9) {
+            this.danoAtivo = true;
+
+           if (this.direcao === HEROINA_DIREITA) {
+            this.hitboxAtaqueDireita.x = this.x + 20 // posição base
+            this.hitboxAtaqueDireita.y = this.y + 50;
+            this.hitboxAtaqueDireita.largura = (this.sheet.coluna === 9) ? 65 : 50 // cresce no frame 9 o ? é um if else
+            this.hitboxAtaqueDireita.altura = 30;
+        } else {
+            this.hitboxAtaqueEsquerda.x = this.x + 0;  // posição mais à esquerda
+            this.hitboxAtaqueEsquerda.y = this.y + 50;
+            this.hitboxAtaqueEsquerda.largura = (this.sheet.coluna === 9) ? 50 : 50;
+            this.hitboxAtaqueEsquerda.altura = 30;
+        }
+    } else {
+        this.danoAtivo = false;
+    }
+
+            // final dos quadros de ataque
+            if (this.sheet.coluna > 9) {
+                this.sheet.coluna = 0;
+                this.atacando = false // quando chegar no ultimo quadro de ataque termina
+
+                // código para ela poder voltar ao estado anterior ao ataque
+                if (this.teclado.pressionada(SETA_DIREITA)) {
+                    this.sheet.linha = 2;
+                } else if (this.teclado.pressionada(SETA_ESQUERDA)) {
+                    this.sheet.linha = 2;
+                } else {
+                    this.sheet.linha = 1;
+                }
+            } 
+
+            return; // impede outras animações enquanto ataca
+
+        }
+
+
     // o pulo teve que vir primeiro senão bugava tudo
 if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 
@@ -222,57 +276,6 @@ if (this.pulando) {
     return;
 }
 
-// Ataque em si
-        if (this.teclado.pressionada(ESPACO) && !this.atacando && !this.pulando) {
-            this.atacando = true;
-            this.sheet.linha = 3; // Linha onde começa o ataque
-            this.sheet.coluna = 0; // Primeiro quadro do ataque
-            this.frameAtaque = 0; // Contador de frames do ataque
-        }
-
-        // o avance dos quadros de ataque
-        if(this.atacando) {
-            if (++this.frameAtaque % 2 !== 0) {
-                this.sheet.coluna++;
-            } // Esse % serve tanto para controlar a velocidade do ataque e quanto maior for o número mais lenta ela vai ser
-
-            // ativa a hitbox do ataque entre os frames 5 e 9
-        if(this.sheet.coluna >= 5 && this.sheet.coluna <= 9) {
-            this.danoAtivo = true;
-
-           if (this.direcao === HEROINA_DIREITA) {
-            this.hitboxAtaqueDireita.x = this.x + 20 // posição base
-            this.hitboxAtaqueDireita.y = this.y + 50;
-            this.hitboxAtaqueDireita.largura = (this.sheet.coluna === 9) ? 65 : 50 // cresce no frame 9 o ? é um if else
-            this.hitboxAtaqueDireita.altura = 30;
-        } else {
-            this.hitboxAtaqueEsquerda.x = this.x + 0;  // posição mais à esquerda
-            this.hitboxAtaqueEsquerda.y = this.y + 50;
-            this.hitboxAtaqueEsquerda.largura = (this.sheet.coluna === 9) ? 50 : 50;
-            this.hitboxAtaqueEsquerda.altura = 30;
-        }
-    } else {
-        this.danoAtivo = false;
-    }
-
-            // final dos quadros de ataque
-            if (this.sheet.coluna > 9) {
-                this.sheet.coluna = 0;
-                this.atacando = false // quando chegar no ultimo quadro de ataque termina
-
-                // código para ela poder voltar ao estado anterior ao ataque
-                if (this.teclado.pressionada(SETA_DIREITA)) {
-                    this.sheet.linha = 2;
-                } else if (this.teclado.pressionada(SETA_ESQUERDA)) {
-                    this.sheet.linha = 2;
-                } else {
-                    this.sheet.linha = 1;
-                }
-            } 
-
-            return; // impede outras animações enquanto ataca
-
-        }
 
         // ANDAR PARA DIREITA
        else if (this.teclado.pressionada(SETA_DIREITA)) {
