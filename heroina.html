@@ -10,6 +10,7 @@
    <script src="colisor.js"></script>
    <script src="flecha.js"></script>
    <script src="arqueiro.js"></script>
+   <script src="chefe.js"></script>
    <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -30,6 +31,9 @@
 
       var imgArqueiro = new Image();
       imgArqueiro.src = "imagem/esqueleto-arqueiro.png";
+      
+      var imgChefe = new Image();
+      imgChefe.src = "imagem/Chefe.png";
 
       var sonic = new Sonic(context, teclado, imgSonic);
       sonic.x = -15; 
@@ -144,6 +148,10 @@ imgArqueiro.onload = function() {
 
 };
 
+imgChefe.onload = function(){
+   const chefe = new Chefe(context, imgChefe, animacao, camera);
+   animacao.novoSprite(chefe);
+}
 
 // integrar o colisor à animação
 animacao.novoSprite({
