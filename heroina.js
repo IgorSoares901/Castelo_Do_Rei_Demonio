@@ -17,23 +17,26 @@ function Sonic(context, teclado, imagem) {
 
    this.teclado = teclado; 
 
-   this.animacao = animacao;
-
    this.x = 0; 
 
    this.y = 0; 
 
-   this.velocidade = 4;
+   this.velocidade = 2.3;
 
    this.atacando = false;
 
    this.frameAtaque = 0;
 
+   this.hitboxAtaque = null; // retangulo do golpe atual
 
+   this.hitboxAtaqueDireita = { x: 0, y: 0, largura: 40, altura: 40};
+   this.hitboxAtaqueEsquerda = { x: 0, y: 0, largura: 40, altura: 40};
+
+   this.danoAtivo = false; // indica se o ataque pode causar dano
 
    // Criando a spritesheet a partir da imagem recebida
 
-   this.sheet = new Spritesheet(context, imagem, 6,10);
+   this.sheet = new Spritesheet(context, imagem, 6, 10, [10, 8, 8, 10, 2, 10], 0.65); // tive que colocar o array aqui dentro para definir os frames somente dela
 
    this.sheet.intervalo = 120; // velocidade da animação
 
@@ -45,10 +48,95 @@ function Sonic(context, teclado, imagem) {
 
    this.direcao = HEROINA_DIREITA;
 
+   // dano
+   this.recebendoDano = false;
+   this.invencivel = 0;
+   this.frameDano = 0;
+   this.alphaPiscar = 1; // ela vai ficar piscando após receber dano
+
 } 
 
-Sonic.prototype = {
-    atualizar: function() {
+Sonic.prototype = { 
+
+   atualizar: function() {
+    //invencibilidade
+    if (this.invencivel) {
+        // pisca
+        this.alphaPiscar = (Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1; // a cada 100 milesegundos ela ira piscar
+        // se o tempo acabar
+        if (Date.now() > this.tempoInvencivel) {
+            this.invencivel = false;
+            this.alphaPiscar = 1;
+        }
+    }
+
+    // recebendo dano
+    if (this.recebendoDano) {
+        if (++this.frameDano % 10 === 0) {
+            this.sheet.coluna++;
+        if (this.sheet.coluna >= 2) {
+            this.sheet.coluna = 0;
+            this.recebendoDano = false;
+            this.invencivel = true;
+            this.tempoInvencivel = Date.now() + 1500; // 1.5 segundos de invencibilidade
+        }
+        }
+        return; // não faz nada enquanto leva dano
+    }
+
+    // verifica colisões com a flecha e o arqueiro
+    if (!this.invencivel) {
+        // flechas
+        if (window.arqueiros) {
+            for (const arqueiro of window.arqueiros) {
+                if (!arqueiro.vivo) continue;
+
+        // colisao com a hitbox do arqueiro
+        const a ={
+            x: arqueiro.x + arqueiro.offsetX,
+            y: arqueiro.y + arqueiro.offsetY,
+            largura: arqueiro.largura,
+            altura: arqueiro.altura,
+        };
+
+        const h = {x: this.x + 27, y: this.y + 37, largura: 20, altura: 42 };
+        if (
+            h.x < a.x + a.largura &&
+            h.x + h.largura > a.x &&
+            h.y < a.y + a.altura &&
+            h.y + h.altura > a.y
+        ){
+            this.tomarDano();
+            break;
+        }
+            }
+        }
+
+        // flechas ativas
+        if (this.animacao && this.animacao.sprites) {
+            for (const sprite of this.animacao.sprites){
+                if (sprite.constructor.name === "Flecha") {
+                    const f = {
+                        x: sprite.x + sprite.offsetX,
+                        y: sprite.y + sprite.offsetY,
+                        largura: sprite.hitboxLargura,
+                        altura: sprite.hitboxAltura,
+                    };
+            const h = {x: this.x + 27, y: this.y + 37, largura: 20, altura: 42};
+            if (
+                h.x < f.x + f.largura &&
+                h.x + h.largura > f.x &&
+                h.y < f.y + f.altura &&
+                h.y + h.altura >f.y
+            ) {
+                sprite.animacao.excluirSprite(sprite);
+                this.tomarDano();
+                break;
+            }
+                }
+            }
+        }
+    }
     // o pulo teve que vir primeiro senão bugava tudo
 if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 
@@ -58,7 +146,7 @@ if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 
     this.yInicial = this.y;  // ta gravando onde fica o chão
 
-    this.alturaMaxima = this.yInicial - 75; // altura máxima que eu coloquei para o pulo
+    this.alturaMaxima = this.yInicial - 50; // altura máxima que eu coloquei para o pulo
 
     this.sheet.linha = 0;  
 
@@ -68,28 +156,28 @@ if (this.teclado.pressionada(SETA_CIMA) && !this.pulando) {
 // Física para ela pular com gravidade
 if (this.pulando) {
     this.y += this.velocidadeY;
-    this.velocidadeY += 0.5; // gravidade quanto maior mais rapido ela vai cair
+    this.velocidadeY += 0.3; // gravidade quanto maior mais rapido ela vai cair
 
     if(this.teclado.pressionada(SETA_DIREITA)) {
-        this.x += this.velocidade * 0.9; // fica mais lenta no ar
+        this.x += this.velocidade * 1.3; // fica mais lenta no ar
         this.direcao = HEROINA_DIREITA;
         this.estado = HEROINA_PULANDO_DIREITA;
     }
 
     else if(this.teclado.pressionada(SETA_ESQUERDA)) {
-        this.x -= this.velocidade * 0.9;
+        this.x -= this.velocidade * 1.3;
         this.direcao = HEROINA_ESQUERDA;
         this.estado = HEROINA_PULANDO_ESQUERDA;
     }
 
     // Sobe usando os frames 0 ate o 5
     if (this.velocidadeY < 0) {
-        const progresso = (this.yInicial - this.y) / 75;
+        const progresso = (this.yInicial - this.y) / 75; // é a altura máxima do pulo
         this.sheet.coluna = Math.min(5, Math.floor(progresso * 5)); // o Math.min é para não passar do frame 5 e o Math.floor é arredondando de cima para baixo
     }
     // Desce usando os frames frames 5 até 9
     else {
-        const progresso = (this.y - this.alturaMaxima) / 75;
+        const progresso = (this.y - this.alturaMaxima) / 75; 
         this.sheet.coluna = 5 + Math.min(4, Math.floor(progresso * 5)); // funciona igual o de cima
     }
 
@@ -115,8 +203,7 @@ if (this.pulando) {
     return;
 }
 
-
-        // Ataque em si
+// Ataque em si
         if (this.teclado.pressionada(ESPACO) && !this.atacando && !this.pulando) {
             this.atacando = true;
             this.sheet.linha = 3; // Linha onde começa o ataque
@@ -126,12 +213,31 @@ if (this.pulando) {
 
         // o avance dos quadros de ataque
         if(this.atacando) {
-            if (++this.frameAtaque % 3 === 0) {
+            if (++this.frameAtaque % 2 !== 0) {
                 this.sheet.coluna++;
             } // Esse % serve tanto para controlar a velocidade do ataque e quanto maior for o número mais lenta ela vai ser
 
+            // ativa a hitbox do ataque entre os frames 5 e 9
+        if(this.sheet.coluna >= 5 && this.sheet.coluna <= 9) {
+            this.danoAtivo = true;
+
+           if (this.direcao === HEROINA_DIREITA) {
+            this.hitboxAtaqueDireita.x = this.x + 20 // posição base
+            this.hitboxAtaqueDireita.y = this.y + 50;
+            this.hitboxAtaqueDireita.largura = (this.sheet.coluna === 9) ? 65 : 50 // cresce no frame 9 o ? é um if else
+            this.hitboxAtaqueDireita.altura = 30;
+        } else {
+            this.hitboxAtaqueEsquerda.x = this.x + 0;  // posição mais à esquerda
+            this.hitboxAtaqueEsquerda.y = this.y + 50;
+            this.hitboxAtaqueEsquerda.largura = (this.sheet.coluna === 9) ? 50 : 50;
+            this.hitboxAtaqueEsquerda.altura = 30;
+        }
+    } else {
+        this.danoAtivo = false;
+    }
+
             // final dos quadros de ataque
-            if (this.sheet.coluna > 6) {
+            if (this.sheet.coluna > 9) {
                 this.sheet.coluna = 0;
                 this.atacando = false // quando chegar no ultimo quadro de ataque termina
 
@@ -181,12 +287,61 @@ if (this.pulando) {
             this.sheet.linha = 1;
             this.sheet.proximoQuadro();
         }
+
     },
 
-    desenhar: function() {
-        // Espelha automaticamente se estiver olhando pra esquerda
-        this.sheet.desenhar(this.x, this.y, this.direcao === HEROINA_ESQUERDA);
-    }
-};
+    // funcao de tomar dano
+    tomarDano: function() {
+  if (this.recebendoDano || this.invencivel) return;
+  
+  this.recebendoDano = true;
+  this.sheet.linha = 5; // linha da animação de dano
+  this.sheet.coluna = 0;
+  this.frameDano = 0;
 
-    
+  // pequeno recuo
+  const direcaoKnock = (this.direcao === HEROINA_DIREITA) ? -15 : 15;
+  this.x += direcaoKnock;
+  this.y -= 5; // leve impulso pra cima
+
+  console.log("Heroína tomou dano!");
+},
+   desenhar: function () {
+  const ctx = this.context;
+
+  // --- desenha a sprite com possível efeito de piscar (invencibilidade) ---
+  ctx.save();
+  ctx.globalAlpha = this.invencivel ? this.alphaPiscar : 1;
+  this.sheet.desenhar(this.x, this.y, this.direcao === HEROINA_ESQUERDA);
+  ctx.restore();
+
+  // --- debug: hitbox de ataque ---
+  ctx.save();
+  ctx.lineWidth = 2;
+
+  if (this.danoAtivo) {
+    if (this.direcao === HEROINA_DIREITA) {
+      const h = this.hitboxAtaqueDireita;
+      ctx.strokeStyle = "red";
+      ctx.strokeRect(h.x, h.y, h.largura, h.altura);
+    } else {
+      const h = this.hitboxAtaqueEsquerda;
+      ctx.strokeStyle = "orange";
+      ctx.strokeRect(h.x, h.y, h.largura, h.altura);
+    }
+  }
+
+  ctx.restore();
+},
+retanguloAtaque: function () {
+    if (!this.danoAtivo) return null; // só dano ao atacar
+    if (this.direcao === HEROINA_DIREITA) {
+        const h = this.hitboxAtaqueDireita;
+        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
+    } else {
+        const h = this.hitboxAtaqueEsquerda;
+        return { x: h.x, y :h.y, largura: h.largura, altura: h.altura};
+    }
+}
+
+}

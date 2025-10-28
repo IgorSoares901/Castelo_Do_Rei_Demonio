@@ -1,4 +1,4 @@
-function Spritesheet(context, imagem, linhas, colunas) {
+function Spritesheet(context, imagem, linhas, colunas, framesPorLinha = [], escala = 1) {
     this.context = context;
     this.imagem = imagem;
     this.numLinhas = linhas;
@@ -6,8 +6,8 @@ function Spritesheet(context, imagem, linhas, colunas) {
     this.intervalo = 0;
     this.linha = 0;
     this.coluna = 0;
-
-    this.framesPorLinha = [10, 8, 8, 7, 2, 10]; // tive que colocar esse inferno pra ele reconhecer os quadros certinho kkkk
+    this.framesPorLinha = framesPorLinha; // tive que criar esse construtor para definir corretamento o de todos os personagens
+    this.escala = escala;
 }
 
 Spritesheet.prototype = {
@@ -40,6 +40,8 @@ Spritesheet.prototype = {
         const altura = Math.floor(this.imagem.height / this.numLinhas);
         const ctx = this.context;
 
+        const escala = this.escala || 1;
+
         if (espelhar) {
             ctx.save();
             ctx.scale(-1, 1);
@@ -48,7 +50,11 @@ Spritesheet.prototype = {
                 largura * this.coluna,
                 altura * this.linha,
                 largura, altura,
-                -x - largura, y, largura, altura
+                (-x - largura * escala),
+                 y, 
+                 largura * escala, 
+                 altura * escala
+
             );
             ctx.restore();
         } else {
@@ -57,7 +63,9 @@ Spritesheet.prototype = {
                 largura * this.coluna,
                 altura * this.linha,
                 largura, altura,
-                x, y, largura, altura
+                x, y,
+                largura * escala, 
+                altura * escala
             );
         }
     }
