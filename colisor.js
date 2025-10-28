@@ -88,7 +88,7 @@ if (dx < dy) {
     ctx.fillRect(b.x, b.y, b.largura, b.altura);
   }
 
-  // === desenha hitbox da heroína (debug) ===
+  // desenha hitbox da heroína 
   const h = {
     x: this.heroina.x + 27, // mesmos valores do checarColisoes
     y: this.heroina.y + 37,
