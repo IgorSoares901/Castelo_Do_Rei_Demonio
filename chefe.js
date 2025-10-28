@@ -3,7 +3,7 @@ function Chefe(context, imagem, animacao, camera) {
   this.animacao = animacao;
   this.camera = camera;
 
-  this.x = 400;
+  this.x = 3500;
   this.y = 172;
 
   this.sheet = new Spritesheet(context, imagem, 3, 13, [13, 8, 3], 1.8);
@@ -11,11 +11,16 @@ function Chefe(context, imagem, animacao, camera) {
 
   this.estado = "idle";
   this.direcao = "esquerda";
+
+  // fisica dele
   this.velocidadeY = 0;
   this.noChao = true;
+  this.yInicial = this.y;
+
+  //pulo
   this.alturaPulo = 160;
   this.velocidadeX = 5.0; // pra ele ir pro lado quando pular 
-  this.yInicial = this.y;
+  
   this.cooldownAtaque = Date.now() + 2000; // é o tempo que teremos para atacar ele
 
 }
@@ -23,6 +28,10 @@ function Chefe(context, imagem, animacao, camera) {
 Chefe.prototype = {
   atualizar: function () {
     const agora = Date.now();
+
+    // se não tiver heroina ignora
+    const hero = window.heroina;
+    if (!hero) return;
 
     // só atualiza se estiver visível na câmera
     const margem = 100;
@@ -47,7 +56,11 @@ Chefe.prototype = {
     }
 
     //movimento lateral para a esquerda por enquanto
-    this.x += (this.direcao === "esquerda" ? - this.velocidadeX : this.velocidadeX);
+     if (this.direcao === "esquerda") {
+        this.x -= this.velocidadeX;
+      } else {
+        this.x += this.velocidadeX;
+      }
 
     // toca no chão
     if( this.y >= this.yInicial) {
@@ -58,7 +71,7 @@ Chefe.prototype = {
         this.cooldownAtaque = agora + 2000;
     }
 
-    return
+    return;
 }
 
     // ele parado
@@ -67,8 +80,14 @@ Chefe.prototype = {
       this.sheet.proximoQuadro();
 
       // 1 segundo parado antes de pular
-      if (agora >= this.cooldownAtaque) {
-        this.iniciarPulo();
+     if (agora >= this.cooldownAtaque) {
+        // decide direção conforme posição da heroína
+        if (hero.x + 20 < this.x) {
+          this.direcao = "esquerda";
+        } else if (hero.x > this.x + 20) {
+          this.direcao = "direita";
+        }
+        this.iniciarPulo(); // os valores aqui dentro são os responsaveis por ele decideir se vai atras dela ou nao
       }
     }
   },
