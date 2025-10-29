@@ -93,7 +93,7 @@ if (dx < dy) {
     x: this.heroina.x + 27, // mesmos valores do checarColisoes
     y: this.heroina.y + 37,
     largura: 20,
-    altura: 45,
+    altura: 42,
   };
 
   // contorno
