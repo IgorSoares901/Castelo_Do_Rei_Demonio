@@ -37,7 +37,7 @@
 
       var sonic = new Sonic(context, teclado, imgSonic);
       sonic.x = -15; 
-      sonic.y = 300; 
+      sonic.y = 320; 
       animacao.novoSprite(sonic);
       window.heroina = sonic;
 
@@ -150,6 +150,7 @@ imgArqueiro.onload = function() {
 
 imgChefe.onload = function(){
    const chefe = new Chefe(context, imgChefe, animacao, camera);
+   chefe.colisor = colisor; 
    animacao.novoSprite(chefe);
 }
 
