@@ -31,13 +31,69 @@ function Chefe(context, imagem, animacao, camera) {
   this.altura = 50;
   this.offsetX = 73;  
   this.offsetY = 180; // além disso tive que usar a mesma colisão que a heroina para ir
+
+  // hp
+  this.hp = 10;
+  this.vivo = true;
+  this.morrendo = false;
+  this.recebendoDano = false;
+  this.invencivel = 0;
+  this.tempoInvencivel = 0;
+  this.alphaPiscar = 1;
+
+  // controle da animaçao de morte 
+  this.frameMorte;
+
 }
 
 Chefe.prototype = {
   atualizar: function () {
+    if (this.morrendo) {
+  this.animarMorte();
+  return;
+}
+    if (!this.vivo && !this.morrendo) return;
+
     const agora = Date.now();
     const hero = window.heroina;
     if (!hero) return;
+
+    // invencbilidade
+    if (this.invencivel) {
+      this.alphaPiscar = Math.floor(Date.now() / 100) % 2 === 0 ? 0.4 : 1;
+      if (Date.now() > this.tempoInvencivel) {
+        this.invencivel = false;
+        this.alphaPiscar = 1;
+      }
+    }
+
+    //morte
+    if(this.morrendo) {
+      this.animarMorte()
+      return;
+    }
+
+    // levou dano da heroina
+    if (!this.invencivel && hero && hero.danoAtivo && hero.viva) {
+      const hit = hero.retanguloAtaque();
+      if (hit) {
+        const hb = {
+          x: this.x + this.offsetX,
+          y: this.y + this.offsetY,
+          largura: this.largura,
+          altura: this.altura,
+         };
+         
+         if (
+          hit.x < hb.x + hb.largura &&
+          hit.x + hit.largura > hb.x &&
+          hit.y < hb.y + hb.altura &&
+          hit.y + hit.altura > hb.y
+         ) {
+          this.tomarDano();
+         }
+      }
+    }
 
     // só atualiza se estiver visível na câmera
     const margem = 50;
@@ -152,10 +208,16 @@ Chefe.prototype = {
       this.sheet.proximoQuadro();
 
       if (agora >= this.cooldownAtaque) {
-        // decide se vai pular na heroina
-        this.direcao = hero.x < this.x ? "esquerda" : "direita";
-        this.iniciarPulo();
-      }
+       const distancia = hero.x - this.x;
+
+  if (hero.x + 30 < this.x) {
+  this.direcao = "esquerda";
+} else if (hero.x > this.x + 30) {
+  this.direcao = "direita";
+}
+
+  this.iniciarPulo();
+} 
     }
 
     // impede de cair pra sempre, tipo quando matam o sekiro se ele ficar eternamente caindo
@@ -187,9 +249,60 @@ Chefe.prototype = {
   this.yAnterior = this.y;
 },
 
+tomarDano: function () {
+  if (this.recebendoDano || this.invencivel || !this.vivo || this.morrendo) return;
+
+  this.hp--; // essas coisas aqui que tiram o hp
+  console.log(`chefe tomou dano, HP restante:{this.hp}`);
+
+  if (this.hp <= 0) {
+    this.morrer();
+    return;
+  }
+
+  this.recebendoDano = true;
+  this.invencivel = true;
+  this.tempoInvencivel = Date.now() + 1000; // invencibilidade
+  this.alphaPiscar = 1;
+
+  setTimeout(() => {
+    this.recebendoDano = false;
+  }, 200);
+},
+
+// morrendo
+morrer: function () {
+  this.morrendo = true;
+  this.vivo = false;
+  this.estado = "morrendo";
+  this.sheet.linha = 2; 
+  this.sheet.coluna = 0;
+  this.sheet.intervalo = 120; // mais lento para ver
+  this.frameMorte = 0;
+  console.log("Godofredo foi pro céu! POGGERS!");
+},
+
+animarMorte: function () {
+  // esse % ta avançando os quadros da animação quanto maior mais lento
+  if (++this.frameMorte % 10 === 0) {
+    this.sheet.coluna++;
+    console.log("Tchau Godofredo", this.sheet.coluna);
+  }
+
+  // impede ultrapassar o último frame (coluna 2)
+  if (this.sheet.coluna >= 3) {
+    console.log("Godofredo morreu (fim da animação).");
+    this.animacao.excluirSprite(this);
+    this.morrendo = false;
+    this.vivo = false;
+  }
+},
   desenhar: function () {
     const ctx = this.context;
-    this.sheet.desenhar(this.x, this.y, this.direcao === "esquerda");
+   ctx.save();
+   ctx.globalAlpha = (this.morrendo ? 1 : (this.invencivel ? this.alphaPiscar : 1));
+   this.sheet.desenhar(this.x, this.y, this.direcao === "esquerda");
+   ctx.restore();
 
     // debug
     const hb = {

@@ -10,6 +10,8 @@
    <script src="colisor.js"></script>
    <script src="flecha.js"></script>
    <script src="arqueiro.js"></script>
+   <script src="osso.js"></script>
+   <script src="esqueleto.js"></script>
    <script src="chefe.js"></script>
    <link rel="stylesheet" href="styles.css">
 </head>
@@ -32,12 +34,15 @@
       var imgArqueiro = new Image();
       imgArqueiro.src = "imagem/esqueleto-arqueiro.png";
       
+      var imgEsqueleto = new Image();
+      imgEsqueleto.src = "imagem/esqueleto.png";
+
       var imgChefe = new Image();
       imgChefe.src = "imagem/Chefe.png";
 
       var sonic = new Sonic(context, teclado, imgSonic);
-      sonic.x = -15; 
-      sonic.y = 320; 
+      sonic.x = 0; 
+      sonic.y = 0; 
       animacao.novoSprite(sonic);
       window.heroina = sonic;
 
@@ -147,11 +152,17 @@ imgArqueiro.onload = function() {
   arqueiros.push(arqueiro6);
 
 };
-
+ // chefe
 imgChefe.onload = function(){
    const chefe = new Chefe(context, imgChefe, animacao, camera);
    chefe.colisor = colisor; 
    animacao.novoSprite(chefe);
+}
+
+//esqueleto
+imgEsqueleto.onload = function() {
+   const esqueleto = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   animacao.novoSprite(esqueleto);
 }
 
 // integrar o colisor à animação
