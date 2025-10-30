@@ -131,31 +131,111 @@ Sonic.prototype = {
             }
         }
 
-        // flechas ativas
-        if (this.animacao && this.animacao.sprites) {
-            for (const sprite of this.animacao.sprites){
-                if (sprite.constructor.name === "Flecha") {
-                    const f = {
-                        x: sprite.x + sprite.offsetX,
-                        y: sprite.y + sprite.offsetY,
-                        largura: sprite.hitboxLargura,
-                        altura: sprite.hitboxAltura,
-                    };
-            const h = {x: this.x + 27, y: this.y + 37, largura: 20, altura: 42};
-            if (
-                h.x < f.x + f.largura &&
-                h.x + h.largura > f.x &&
-                h.y < f.y + f.altura &&
-                h.y + h.altura >f.y
-            ) {
-                sprite.animacao.excluirSprite(sprite);
-                this.tomarDano();
-                break;
-            }
-                }
-            }
-        }
+        // esqueletos
+        if (window.esqueletos) {
+        for (const esqueleto of window.esqueletos) {
+         if (!esqueleto.vivo || esqueleto.morrendo || !esqueleto.hitboxAtiva) continue;
+        const e = {
+        x: esqueleto.x + esqueleto.offsetX,
+        y: esqueleto.y + esqueleto.offsetY,
+        largura: esqueleto.largura,
+        altura: esqueleto.altura,
+};
+
+        const h = { x: this.x + 27, y: this.y + 37, largura: 20, altura: 42 };
+
+        if (
+        h.x < e.x + e.largura &&
+        h.x + h.largura > e.x &&
+        h.y < e.y + e.altura &&
+        h.y + h.altura > e.y
+      ) {
+        this.tomarDano();
+        break;
+      }
     }
+  }
+
+        // chefe
+        if (window.chefe && window.chefe.length > 0) {
+  for (const boss of window.chefe) {
+    if (!boss.vivo || boss.morrendo) continue;
+
+    const c = {
+      x: boss.x + boss.offsetX,
+      y: boss.y + boss.offsetY,
+      largura: boss.largura,
+      altura: boss.altura,
+    };
+
+    const h = { x: this.x + 27, y: this.y + 37, largura: 20, altura: 42 };
+
+    if (
+      h.x < c.x + c.largura &&
+      h.x + h.largura > c.x &&
+      h.y < c.y + c.altura &&
+      h.y + h.altura > c.y
+    ) {
+      this.tomarDano();
+      break;
+    }
+  }
+}
+
+        //mini godos
+        if (window.godos) {
+  for (const godo of window.godos) {
+    if (!godo.vivo || godo.morrendo) continue;
+
+    const g = {
+      x: godo.x + (godo.offsetX || 0),
+      y: godo.y + (godo.offsetY || 0),
+      largura: godo.largura,
+      altura: godo.altura,
+    };
+
+    const h = { x: this.x + 27, y: this.y + 37, largura: 20, altura: 42 };
+
+    if (
+      h.x < g.x + g.largura &&
+      h.x + h.largura > g.x &&
+      h.y < g.y + g.altura &&
+      h.y + h.altura > g.y
+    ) {
+      console.log("Heroína colidiu com o Godo!");
+      this.tomarDano();
+      break;
+    }
+  }
+}
+
+
+        // flechas e ossos
+         if (this.animacao && this.animacao.sprites) {
+    for (const sprite of this.animacao.sprites) {
+      if (sprite instanceof Flecha || sprite instanceof Osso) {
+        const proj = {
+          x: sprite.x + sprite.offsetX,
+          y: sprite.y + sprite.offsetY,
+          largura: sprite.hitboxLargura,
+          altura: sprite.hitboxAltura,
+        };
+        const h = { x: this.x + 27, y: this.y + 37, largura: 20, altura: 42 };
+
+        if (
+          h.x < proj.x + proj.largura &&
+          h.x + h.largura > proj.x &&
+          h.y < proj.y + proj.altura &&
+          h.y + h.altura > proj.y
+        ) {
+          sprite.animacao.excluirSprite(sprite);
+          this.tomarDano();
+          break;
+        }
+      }
+    }
+  }
+}
 
     // Ataque em si
         if (this.teclado.pressionada(ESPACO) && !this.atacando && !this.pulando) {
@@ -181,7 +261,7 @@ Sonic.prototype = {
             this.hitboxAtaqueDireita.largura = (this.sheet.coluna === 9) ? 65 : 50 // cresce no frame 9 o ? é um if else
             this.hitboxAtaqueDireita.altura = 30;
         } else {
-            this.hitboxAtaqueEsquerda.x = this.x + 0;  // posição mais à esquerda
+            this.hitboxAtaqueEsquerda.x = this.x + -5;  // posição mais à esquerda
             this.hitboxAtaqueEsquerda.y = this.y + 50;
             this.hitboxAtaqueEsquerda.largura = (this.sheet.coluna === 9) ? 50 : 50;
             this.hitboxAtaqueEsquerda.altura = 30;
@@ -254,24 +334,34 @@ if (this.pulando) {
         this.sheet.coluna = 5 + Math.min(4, Math.floor(progresso * 5)); // funciona igual o de cima
     }
 
-    // Chegou ao chão
-    if (this.y >= this.yInicial) {
-        this.y = this.yInicial;
-        this.velocidadeY = 0;
-        this.pulando = false;
+    // Corrigi o bug dela pulando infinitamente
+    // ele ocorria pq eu estava usando o this.Yinicial 
+    // então assim que ela voltava pro y inicial de quando o pulo começou, o jogo achava que ela já estava no chão
+if (this.velocidadeY >= 0) {
+  // verifica se tocou em alguma forma de châo 
+  for (const b of colisor.blocos) {
+    const h = { x: this.x + 27, y: this.y + 37, largura: 20, altura: 42 };
+    if (
+      h.x < b.x + b.largura &&
+      h.x + h.largura > b.x &&
+      h.y + h.altura >= b.y && // tocando o topo do bloco
+      h.y + h.altura <= b.y + b.altura &&
+      (b.tipo === "chao" || b.tipo === "plataforma")
+    ) {
+      this.y = b.y - h.altura - 37; // colisor encosta no cao
+      this.velocidadeY = 0;
+      this.pulando = false;
 
-        // Retorna à animação anterior quando ela chegar no chão
-        this.sheet.coluna = 0;
-
-        if (this.teclado.pressionada(SETA_DIREITA)) {
-            this.sheet.linha = 2; // andar direita
-        } else if (this.teclado.pressionada(SETA_ESQUERDA)) {
-            this.sheet.linha = 2; // andar esquerda (espelhar no draw)
-        } else {
-            this.sheet.linha = 1; // idle
-        }
+      // retorna ao idle ou andar
+      this.sheet.coluna = 0;
+      if (this.teclado.pressionada(SETA_DIREITA) || this.teclado.pressionada(SETA_ESQUERDA))
+        this.sheet.linha = 2; // andando
+      else
+        this.sheet.linha = 1; // idle
+      break;
     }
-
+  }
+}
     // Sai do atualizar pq senão quebra e buga tudo UwU
     return;
 }
@@ -346,6 +436,8 @@ morrer: function() {
     this.recebendoDano = false;
     this.atacando = false;
     this.invencivel = false;
+    this.pulando = false;
+    this.velocidadeY = 0;
     this.sheet.linha = 5;
     this.sheet.coluna = 0;
     this.frameDano = 0;

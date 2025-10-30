@@ -42,7 +42,7 @@ Colisor.prototype = {
 const dy = halfHeights - Math.abs(overlapY);
 
 if (dx < dy) {
-  // --- COLISÃO HORIZONTAL (paredes) ---
+  // colisão horizontal
   if (overlapX > 0) {
     // heroína à direita do bloco → empurra para a direita
     this.heroina.x += dx;
@@ -51,13 +51,13 @@ if (dx < dy) {
     this.heroina.x -= dx;
   }
 } else {
-  // --- COLISÃO VERTICAL (chão ou teto) ---
+  //  COLISÃO VERTICAL 
   if (overlapY > 0) {
-    // heroína abaixo do bloco → bateu a cabeça
+    // heroína abaixo do bloco 
     this.heroina.y += dy;
     this.heroina.velocidadeY = 0;
   } else {
-    // heroína acima do bloco → está no chão
+    // heroína acima do bloco 
     this.heroina.y -= dy;
     this.heroina.velocidadeY = 0;
     this.heroina.pulando = false;
@@ -91,9 +91,9 @@ if (dx < dy) {
   // desenha hitbox da heroína 
   const h = {
     x: this.heroina.x + 27, // mesmos valores do checarColisoes
-    y: this.heroina.y + 37,
+    y: this.heroina.y + 35,
     largura: 20,
-    altura: 42,
+    altura: 47,
   };
 
   // contorno
@@ -107,7 +107,7 @@ if (dx < dy) {
   ctx.arc(h.x + h.largura / 2, h.y + h.altura / 2, 3, 0, Math.PI * 2);
   ctx.fill();
 
-  // opcional: mostrar posição e dimensões na tela
+  //  mostrar posição e dimensões na tela
   ctx.font = "10px monospace";
   ctx.fillStyle = "white";
   ctx.fillText(

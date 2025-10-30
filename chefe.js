@@ -3,11 +3,6 @@ function Chefe(context, imagem, animacao, camera) {
   this.animacao = animacao;
   this.camera = camera;
 
-  // posição dele no mapa
-  this.x = 4800;
-  this.y = 50;
-
-  
   this.sheet = new Spritesheet(context, imagem, 3, 13, [13, 8, 3], 1.8);
   this.sheet.intervalo = 120;
 
@@ -23,7 +18,7 @@ function Chefe(context, imagem, animacao, camera) {
   // pulo dele
   this.alturaPulo = 160;
   this.velocidadeX = 5.0;
-  this.cooldownAtaque = Date.now() + 2000;
+  this.cooldownAtaque = Date.now() + 2100;
 
   // colisão
   this.colisor = null;
@@ -196,7 +191,7 @@ Chefe.prototype = {
       // idle no chão por 2 segundos
       if (this.noChao) {
         this.estado = "idle";
-        this.cooldownAtaque = agora + 2000;
+        this.cooldownAtaque = agora + 2100;
       }
 
       this.yAnterior = this.y;
@@ -210,11 +205,11 @@ Chefe.prototype = {
       if (agora >= this.cooldownAtaque) {
        const distancia = hero.x - this.x;
 
-  if (hero.x + 30 < this.x) {
+  if (hero.x + 100 < this.x) {
   this.direcao = "esquerda";
-} else if (hero.x > this.x + 30) {
+} else if (hero.x > this.x + 100) {
   this.direcao = "direita";
-}
+} // coloquei em 100 para ele nunca tentar fugir da heroina kkkk
 
   this.iniciarPulo();
 } 
@@ -244,7 +239,7 @@ Chefe.prototype = {
   this.velocidadeY = -6.5; 
 
   // restaura velocidade horizontal completa a cada novo pulo
-  this.velocidadeX = 5.5;
+  this.velocidadeX = 5.0;
 
   this.yAnterior = this.y;
 },
@@ -272,6 +267,7 @@ tomarDano: function () {
 
 // morrendo
 morrer: function () {
+  if (this.morrendo || !this.vivo) return;
   this.morrendo = true;
   this.vivo = false;
   this.estado = "morrendo";

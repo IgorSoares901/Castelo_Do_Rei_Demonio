@@ -151,6 +151,7 @@ if (this.hitboxAtiva && window.heroina) {
 }
   },
 morrer: function () {
+  if (this.morrendo || !this.vivo) return;
   this.estado = "morrendo";
   this.morrendo = true;
   this.sheet.linha = 2;
