@@ -13,7 +13,7 @@ Colisor.prototype = {
   checarColisoes: function () {
     const h = {
       x: this.heroina.x + 27, // posição da hitbox
-      y: this.heroina.y + 37,
+      y: this.heroina.y + 40,
       largura: 20,
       altura: 42,
       
@@ -77,8 +77,8 @@ if (dx < dy) {
   desenhar: function () {
    const ctx = this.context;
 
-  // === desenha blocos do cenário ===
-  for (const b of this.blocos) {
+  //  desenha blocos do cenário
+ /* for (const b of this.blocos) {
     ctx.fillStyle =
       b.tipo === "chao"
         ? "brown"
@@ -114,6 +114,6 @@ if (dx < dy) {
     `x:${Math.round(h.x)} y:${Math.round(h.y)} w:${h.largura} h:${h.altura}`,
     h.x,
     h.y - 5
-  );
+  );*/
 }
 };

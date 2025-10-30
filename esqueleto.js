@@ -173,7 +173,7 @@ Esqueleto.prototype = {
         this.sheet.desenhar(this.x, this.y, this.direcao !== this.ladoPadrao);
     
         // debug 
-    const ctx = this.context;
+   /* const ctx = this.context;
     const hb = {
       x: this.x + this.offsetX,
       y: this.y + this.offsetY,
@@ -183,6 +183,6 @@ Esqueleto.prototype = {
 
     ctx.strokeStyle = "lime";
     ctx.lineWidth = 2;
-    ctx.strokeRect(hb.x, hb.y, hb.largura, hb.altura);
+    ctx.strokeRect(hb.x, hb.y, hb.largura, hb.altura);*/
   },
 };

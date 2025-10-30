@@ -496,7 +496,7 @@ retanguloAtaque: function () {
   ctx.restore();
 
   // debug da hitbox de ataque 
-  ctx.save();
+ /* ctx.save();
   ctx.lineWidth = 2;
 
   if (this.danoAtivo) {
@@ -511,7 +511,7 @@ retanguloAtaque: function () {
     }
   }
 
-  ctx.restore();
+  ctx.restore();*/
 },
 
 

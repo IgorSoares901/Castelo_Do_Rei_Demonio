@@ -111,7 +111,7 @@ Arqueiro.prototype = {
             this.imagemFlecha,
             this.x + 10,
             this.y + 35, // x e y são as posições de onde a flecha vai sai
-            4.5 // velocidade da flecha
+            3.0 // velocidade da flecha
         );
 
         flecha.animacao = this.animacao;
@@ -172,7 +172,7 @@ morrer: function () {
   const ctx = this.context;
 
   // hitbox do arqueiro 
- const hb = {
+/* const hb = {
   x: this.x + this.offsetX,
   y: this.y + this.offsetY,
   largura: this.largura,
@@ -199,6 +199,6 @@ ctx.fillText(
   `Arq → x:${Math.round(hb.x)} y:${Math.round(hb.y)} w:${hb.largura} h:${hb.altura}`,
   hb.x - 10,
   hb.y - 8
-);
+); */
  }
 }

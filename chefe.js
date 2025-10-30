@@ -22,7 +22,7 @@ function Chefe(context, imagem, animacao, camera) {
 
   // colisão
   this.colisor = null;
-  this.largura = 90;
+  this.largura = 83;
   this.altura = 50;
   this.offsetX = 73;  
   this.offsetY = 180; // além disso tive que usar a mesma colisão que a heroina para ir
@@ -301,7 +301,7 @@ animarMorte: function () {
    ctx.restore();
 
     // debug
-    const hb = {
+   /* const hb = {
       x: this.x + this.offsetX,
       y: this.y + this.offsetY,
       largura: this.largura,
@@ -320,6 +320,6 @@ animarMorte: function () {
       hb.x,
       hb.y - 8
     );
-    ctx.restore();
+    ctx.restore();*/
   },
 };
