@@ -12,6 +12,7 @@
    <script src="arqueiro.js"></script>
    <script src="osso.js"></script>
    <script src="esqueleto.js"></script>
+   <script src="minigodo.js"></script>
    <script src="chefe.js"></script>
    <link rel="stylesheet" href="styles.css">
 </head>
@@ -37,11 +38,14 @@
       var imgEsqueleto = new Image();
       imgEsqueleto.src = "imagem/esqueleto.png";
 
+      var imgGodo = new Image();
+      imgGodo.src = "imagem/Chefe.png"
+
       var imgChefe = new Image();
       imgChefe.src = "imagem/Chefe.png";
 
       var sonic = new Sonic(context, teclado, imgSonic);
-      sonic.x = 0; 
+      sonic.x = 3200; 
       sonic.y = 0; 
       animacao.novoSprite(sonic);
       window.heroina = sonic;
@@ -137,7 +141,7 @@ imgArqueiro.onload = function() {
 
   //arqueiro 5
   const arqueiro5 = new Arqueiro(context, imgArqueiro, animacao, camera);
-  arqueiro5.x = 3203; // posiçoes iniciais
+  arqueiro5.x = 650; // posiçoes iniciais
   arqueiro5.y = 280;
   arqueiro5.colisor = colisor; // colisor do arqueiro
   animacao.novoSprite(arqueiro5);
@@ -145,7 +149,7 @@ imgArqueiro.onload = function() {
 
   //arqueiro 6
   const arqueiro6 = new Arqueiro(context, imgArqueiro, animacao, camera);
-  arqueiro6.x = 3500; // posiçoes iniciais
+  arqueiro6.x = 950; // posiçoes iniciais
   arqueiro6.y = 280;
   arqueiro6.colisor = colisor; // colisor do arqueiro
   animacao.novoSprite(arqueiro6);
@@ -153,17 +157,140 @@ imgArqueiro.onload = function() {
 
 };
  // chefe
-imgChefe.onload = function(){
-   const chefe = new Chefe(context, imgChefe, animacao, camera);
-   chefe.colisor = colisor; 
-   animacao.novoSprite(chefe);
-}
+imgChefe.onload = function() {
+   window.chefe = []; // semppre precisa desse windows, ate la na heroina.js pra ela se tocar que os bichos existem
+   const chefe1 = new Chefe(context, imgChefe, animacao, camera);
+   chefe1.x = 4800; // posição inicial
+   chefe1.y = 20;
+   chefe1.colisor = colisor;
+   animacao.novoSprite(chefe1);
+   chefe.push(chefe1);
+};
 
-//esqueleto
+
+
 imgEsqueleto.onload = function() {
-   const esqueleto = new Esqueleto(context, imgEsqueleto, animacao, camera);
-   animacao.novoSprite(esqueleto);
-}
+   window.esqueletos = [];
+    // esqueleto 1
+   const esqueleto1 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto1.x = 2000;
+   esqueleto1.y = 0;
+   esqueleto1.colisor = colisor;
+   animacao.novoSprite(esqueleto1);
+   esqueletos.push(esqueleto1);
+
+    // esqueleto 2
+   const esqueleto2 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto2.x = 1600;
+   esqueleto2.y = 0;
+   esqueleto2.colisor = colisor;
+   animacao.novoSprite(esqueleto2);
+   esqueletos.push(esqueleto2);
+
+   // esqueleto 3
+   const esqueleto3 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto3.x = 1800;
+   esqueleto3.y = 0;
+   esqueleto3.colisor = colisor;
+   animacao.novoSprite(esqueleto3);
+   esqueletos.push(esqueleto3); 
+
+   //esqueleto 4
+   const esqueleto4 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto4.x = 2300;
+   esqueleto4.y = 0;
+   esqueleto4.colisor = colisor;
+   animacao.novoSprite(esqueleto4);
+   esqueletos.push(esqueleto4);
+
+   // esqueleto 5
+   const esqueleto5 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto5.x = 2600;
+   esqueleto5.y = 0;
+   esqueleto5.colisor = colisor;
+   animacao.novoSprite(esqueleto5);
+   esqueletos.push(esqueleto5);
+
+   // esqueleto 6
+   const esqueleto6 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto6.x = 2850;
+   esqueleto6.y = 0;
+   esqueleto6.colisor = colisor;
+   animacao.novoSprite(esqueleto6);
+   esqueletos.push(esqueleto6);
+
+   // esqueleto 7
+   const esqueleto7 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto7.x = 3690;
+   esqueleto7.y = 300;
+   esqueleto7.colisor = colisor;
+   animacao.novoSprite(esqueleto7);
+   esqueletos.push(esqueleto7);
+
+   // esqueleto 8
+   const esqueleto8 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto8.x = 3819;
+   esqueleto8.y = 300;
+   esqueleto8.colisor = colisor;
+   animacao.novoSprite(esqueleto8);
+   esqueletos.push(esqueleto8);
+
+   // esqueleto 9
+   const esqueleto9 = new Esqueleto(context, imgEsqueleto, animacao, camera);
+   esqueleto9.x = 3925;
+   esqueleto9.y = 300;
+   esqueleto9.colisor = colisor;
+   animacao.novoSprite(esqueleto9);
+   esqueletos.push(esqueleto9);
+ };
+
+ imgGodo.onload = function() {
+   window.godos = []; // semppre precisa desse windows, ate la na heroina.js pra ela se tocar que os bichos existem
+   //godo 1
+   const godo1 = new Godo(context, imgGodo, animacao, camera);
+   godo1.x = 2480; // posição inicial
+   godo1.y = 300;
+   godo1.colisor = colisor;
+   animacao.novoSprite(godo1);
+   godos.push(godo1);
+
+    //godo 2
+   const godo2 = new Godo(context, imgGodo, animacao, camera);
+   godo2.x = 1700; // posição inicial
+   godo2.y = 300;
+   godo2.colisor = colisor;
+   animacao.novoSprite(godo2);
+   godos.push(godo2);
+
+   // godo 3
+   const godo3 = new Godo(context, imgGodo, animacao, camera);
+   godo3.x = 2000; // posição inicial
+   godo3.y = 300;
+   godo3.colisor = colisor;
+   animacao.novoSprite(godo3);
+   godos.push(godo3);
+
+   // godo 4
+   const godo4 = new Godo(context, imgGodo, animacao, camera);
+   godo4.x = 2800; // posição inicial
+   godo4.y = 300;
+   godo4.colisor = colisor;
+   animacao.novoSprite(godo4);
+   godos.push(godo4);
+
+   
+   // godo 5
+   const godo5 = new Godo(context, imgGodo, animacao, camera);
+   godo5.x = 3200; // posição inicial
+   godo5.y = 300;
+   godo5.colisor = colisor;
+   animacao.novoSprite(godo5);
+   godos.push(godo5);
+
+   
+};
+
+ 
 
 // integrar o colisor à animação
 animacao.novoSprite({
