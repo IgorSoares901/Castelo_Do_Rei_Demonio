@@ -72,7 +72,7 @@ Osso.prototype = {
         this.context.restore();
 
         // debug
-    const hb = {
+   /* const hb = {
       x: this.x + this.offsetX,
       y: this.y + this.offsetY,
       largura: this.hitboxLargura,
@@ -84,5 +84,6 @@ Osso.prototype = {
     ctx.lineWidth = 2;
     ctx.strokeRect(hb.x, hb.y, hb.largura, hb.altura);
     ctx.restore();
-    },
+    },*/
+},
 };

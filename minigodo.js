@@ -213,11 +213,11 @@ Godo.prototype = {
     this.sheet.desenhar(this.x, this.y, this.direcao === "esquerda");
 
     // debug
-    const hb = this.hitbox();
+   /* const hb = this.hitbox();
     ctx.save();
     ctx.strokeStyle = "lime";
     ctx.lineWidth = 2;
     ctx.strokeRect(hb.x, hb.y, hb.largura, hb.altura);
-    ctx.restore();
+    ctx.restore();*/
   },
 };

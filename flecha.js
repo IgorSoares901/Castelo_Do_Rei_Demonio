@@ -63,7 +63,7 @@ Flecha.prototype = {
     ctx.drawImage(this.imagem, this.x, this.y);
 
     // debug
-    const hb = {
+   /* const hb = {
       x: this.x + this.offsetX,
       y: this.y + this.offsetY,
       largura: this.hitboxLargura,
@@ -87,6 +87,6 @@ Flecha.prototype = {
       `Flecha → x:${Math.round(hb.x)} y:${Math.round(hb.y)} w:${hb.largura} h:${hb.altura}`,
       hb.x,
       hb.y - 5
-    );
+    );*/
   }
 };
