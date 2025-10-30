@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teste do Arqueiro</title>
+  <script src="animacao.js"></script>
+  <script src="spritesheet.js"></script>
+  <script src="flecha.js"></script>
+  <script src="arqueiro.js"></script>
+</head>
+<body>
+  <canvas id="arqueiro" width="500" height="500"></canvas>
+  <script>
+    var canvas = document.getElementById("arqueiro");
+    var context = canvas.getContext("2d");
+
+    var animacao = new Animacao(context);
+    var flechas = [];
+
+    var imgArqueiro = new Image();
+    imgArqueiro.src = "imagem/esqueleto-arqueiro.png"; // usa seu sprite real
+
+    var arqueiro = new Arqueiro(context, imgArqueiro, animacao);
+    animacao.novoSprite(arqueiro);
+
+    imgArqueiro.onload = function () {
+      animacao.ligar();
+    };
+  </script>
+</body>
+</html>
