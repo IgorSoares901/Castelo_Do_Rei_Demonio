@@ -401,21 +401,18 @@ animacao.novoSprite({
    }
    loopTelaInicial();
 
-   // abre o jogo ao apertar Enter — garante interação para tocar áudio
+   // abre o jogo ao apertar enter e começa a musica
    document.addEventListener("keydown", function (e) {
    if (e.code === "Enter" && !jogoIniciado) {
       jogoIniciado = true;
-      // tenta tocar; se o navegador bloquear, o usuário já interagiu e deve funcionar
-      musicaFundo.play().catch(()=>{ /* ignorar se bloqueado */ });
+      musicaFundo.play().catch(()=>{});
       animacao.ligar();
    }
    });
 
-   // IMPORTANTE: remova qualquer outro imgSonic.onload que chame animacao.ligar()
-   // mantenha apenas a lógica acima para iniciar o jogo quando o jogador apertar Enter.
+   // tive que tirar o animação.ligar para dar certo a tela de carregamento
    imgSonic.onload = function() {
-   // Pré-carregou a sprite, não liga o jogo aqui (a não ser que queira começar automaticamente)
-   // animacao.ligar(); <-- REMOVER esta linha se você usar a tela inicial
+   // animacao.ligar(); 
    };
       </script>
    </body>
