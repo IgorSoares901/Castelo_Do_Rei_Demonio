@@ -26,7 +26,12 @@
       var context = canvas.getContext('2d');
 
       var teclado = new Teclado(document); 
-      var animacao = new Animacao(context); 
+
+      // cria a música ANTES da animação
+      const musicaFundo = new Audio("mp3/musica-fundo.mp3");
+      musicaFundo.loop = true;
+      musicaFundo.volume = 0.4;
+      var animacao = new Animacao(context, musicaFundo); 
 
        // botão de pausa é o enter
       document.addEventListener("keydown", function(e) {
@@ -371,10 +376,48 @@ animacao.novoSprite({
 
       animacao.inserirFundo(mapa,1);
 
-      imgSonic.onload = function() {
-         animacao.ligar();
-      }
-   </script>
-</body>
+   // nossa tela de carregamento e musica de fundo estão daqui para baixo
+   let jogoIniciado = false;
 
-</html>
+   // desenha tela inicial
+   function desenharTelaInicial() {
+   context.fillStyle = "black";
+   context.fillRect(0, 0, canvas.width, canvas.height);
+
+   context.fillStyle = "white";
+   context.font = "28px Arial";
+   context.textAlign = "center";
+   context.fillText("Castelo do Rei Demônio", canvas.width / 2, 180);
+
+   context.font = "16px Arial";
+   context.fillText("Pressione ENTER para começar", canvas.width / 2, 260);
+   }
+
+   function loopTelaInicial() {
+   if (!jogoIniciado) {
+      desenharTelaInicial();
+      requestAnimationFrame(loopTelaInicial);
+   }
+   }
+   loopTelaInicial();
+
+   // abre o jogo ao apertar Enter — garante interação para tocar áudio
+   document.addEventListener("keydown", function (e) {
+   if (e.code === "Enter" && !jogoIniciado) {
+      jogoIniciado = true;
+      // tenta tocar; se o navegador bloquear, o usuário já interagiu e deve funcionar
+      musicaFundo.play().catch(()=>{ /* ignorar se bloqueado */ });
+      animacao.ligar();
+   }
+   });
+
+   // IMPORTANTE: remova qualquer outro imgSonic.onload que chame animacao.ligar()
+   // mantenha apenas a lógica acima para iniciar o jogo quando o jogador apertar Enter.
+   imgSonic.onload = function() {
+   // Pré-carregou a sprite, não liga o jogo aqui (a não ser que queira começar automaticamente)
+   // animacao.ligar(); <-- REMOVER esta linha se você usar a tela inicial
+   };
+      </script>
+   </body>
+
+   </html>

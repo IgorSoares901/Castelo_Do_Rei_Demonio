@@ -40,7 +40,7 @@ function Sonic(context, teclado, imagem) {
 
    this.sheet.intervalo = 120; // velocidade da animação
 
-   this.hp = 5; // total de hp, tem que mudar no respawn tbm!!!!
+   this.hp = 3; // total de hp, tem que mudar no respawn tbm!!!!
 
    this.viva = true;
 
@@ -463,7 +463,7 @@ respawn: function() {
     this.morrendo = false;
     this.recebendoDano = false;
     this.invencivel = false;
-    this.hp = 5; // tem que mudar o hp aqui tbm no respawn
+    this.hp = 3; // tem que mudar o hp aqui tbm no respawn
     this.velocidadeY = 0;
 
     // volta para idle

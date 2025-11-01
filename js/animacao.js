@@ -1,12 +1,14 @@
 //código animacao.js
-function Animacao(context) {
+function Animacao(context, musicaFundo) {
    this.context = context;
    this.sprites = [];
    this.ligado = false;
    this.camera = null;
-    this.pausado = false; // controle de pausa
+   this.pausado = false; // controle de pausa
    this.tempoPausado = 0; // isso corrige o nosso Date.now ao retornar
    this.momentoPausa = 0;
+
+   this.musicaFundo = musicaFundo || null; // coloquei musica de fundo construtor do animador
 
    this.cam = {
       x: 0,
@@ -37,28 +39,38 @@ Animacao.prototype = {
       }
  }, // tive que adicionar toda essa function para o arqueiro não desaparecer junto com a flecha
 
- // funçãopara pausar respeitando a cronometragem dos nossos sprites
+ // função para pausar respeitando a cronometragem dos nossos sprites
    togglePause: function() {
-      if (!this.ligado) return;
-      this.pausado = !this.pausado;
+   if (!this.ligado) return;
+   this.pausado = !this.pausado;
 
-      if (this.pausado) {
-         console.log ("Jogo pausado");
-         this.momentoPausa = Date.now();
-      } else {
-         const pausaDuracao = Date.now() - this.momentoPausa;
-         this.tempoPausado += pausaDuracao;
-         console.log ("Voltou ao jogo");
+   if (this.pausado) {
+      console.log("Jogo pausado");
+      this.momentoPausa = Date.now();
 
-         // corrigir todos os tempos dos inimigos
-         for (const s of this.sprites) {
-            // inimigos com os tempos cronometrados
-            if (s.tempoProximoAtaque) s.tempoProximoAtaque += pausaDuracao;
-            if (s.cooldownAtaque) s.cooldownAtaque += pausaDuracao;
-            if (s.tempoInvencivel) s.tempoInvencivel += pausaDuracao;
-         }
+      // pausa a música se existir
+      if (this.musicaFundo && !this.musicaFundo.paused) {
+         this.musicaFundo.pause();
       }
-   },
+   } else {
+      const pausaDuracao = Date.now() - this.momentoPausa;
+      this.tempoPausado += pausaDuracao;
+      console.log("Voltou ao jogo");
+
+      // retoma a música
+      if (this.musicaFundo && this.musicaFundo.paused) {
+         this.musicaFundo.play().catch(()=>{});
+      }
+
+      // corrige tempos dos inimigos
+      for (const s of this.sprites) {
+         if (s.tempoProximoAtaque) s.tempoProximoAtaque += pausaDuracao;
+         if (s.cooldownAtaque) s.cooldownAtaque += pausaDuracao;
+         if (s.tempoInvencivel) s.tempoInvencivel += pausaDuracao;
+      }
+   }
+},
+
    ligar: function() {
       this.ligado = true;
       this.proximoFrame();
