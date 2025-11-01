@@ -43,11 +43,21 @@ table {
 }
 
 body{
+	background-image: url('imagem/imagem igor.jpg');
 	background-color: rgb(8, 86, 122);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 100vh;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 }
 #canvas_heroina {
 	
-	border: 5px solid rgb(0, 0, 0);
+	border: 5px solid rgb(255, 255, 255);
     position: absolute;
     top: 50%;
     left: 50%;
