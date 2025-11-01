@@ -30,10 +30,10 @@ HUD.prototype = {
     // Texto de HP
     ctx.font = "20px Arial";
     ctx.fillStyle = "white";
-    ctx.fillText("HP: " + this.heroina.hp, 20, 70);
+    ctx.fillText("HP: " + this.heroina.hp, 50, 70);
 
     //espaço para pontuação
-    ctx.fillText("Pontos: " + this.heroina.pontuacao, 20, 100);
+    ctx.fillText("Pontos: " + this.heroina.pontuacao, 105, 100);
 
    // coisa de game over
 
