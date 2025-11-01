@@ -48,7 +48,7 @@ Animacao.prototype = {
       console.log("Jogo pausado");
       this.momentoPausa = Date.now();
 
-      // pausa a música se existir
+      // pausa a música
       if (this.musicaFundo && !this.musicaFundo.paused) {
          this.musicaFundo.pause();
       }
