@@ -3,17 +3,19 @@
 
 <head>
    <title>Personagem controlável e animado</title>
-   <script src="spritesheet.js"></script> 
-   <script src="animacao.js"></script> 
-   <script src="teclado.js"></script> 
-   <script src="heroina.js"></script>
-   <script src="colisor.js"></script>
-   <script src="flecha.js"></script>
-   <script src="arqueiro.js"></script>
-   <script src="osso.js"></script>
-   <script src="esqueleto.js"></script>
-   <script src="minigodo.js"></script>
-   <script src="chefe.js"></script>
+   <script src="/js/spritesheet.js"></script> 
+   <script src="/js/animacao.js"></script> 
+   <script src="/js/teclado.js"></script> 
+   <script src="/js/heroina.js"></script>
+   <script src="/js/colisor.js"></script>
+   <script src="/js/flecha.js"></script>
+   <script src="/js/arqueiro.js"></script>
+   <script src="/js/osso.js"></script>
+   <script src="/js/esqueleto.js"></script>
+   <script src="/js/minigodo.js"></script>
+   <script src="/js/chefe.js"></script>
+   <script src="/js/parallax.js"></script>
+   <script src="/js/Hud.js"></script>
    <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -26,8 +28,24 @@
       var teclado = new Teclado(document); 
       var animacao = new Animacao(context); 
 
+       // botão de pausa é o enter
+      document.addEventListener("keydown", function(e) {
+         if (e.keyCode === 13) {
+            animacao.togglePause();
+         }
+      });
+
       var imgMapa = new Image();
-      imgMapa.src = 'imagem/mapa-principal-2.png'
+      imgMapa.src = 'imagem/mapa-principal-2 cortado.png'
+
+      var imgNuvens = new Image();
+      imgNuvens.src = 'imagem/floresta1  - Copia.jpg';
+
+      var nuvensLayer3 = new Image();
+      nuvensLayer3.src = 'imagem/nuvenslayer-3.png'
+
+      var imgMuros = new Image();
+      imgMuros.src = 'imagem/parede-porta copia.jpg'
 
       var imgSonic = new Image(); 
       imgSonic.src = 'imagem/kitsune-sprite-sheet.png';
@@ -49,6 +67,32 @@
       sonic.y = 330; 
       animacao.novoSprite(sonic);
       window.heroina = sonic;
+
+    // PARALLAX CONFIG
+   var parallax = new Parallax(context);
+
+   imgNuvens.onload = imgMuros.onload = function() {
+      // aqui é o seguinte: adicionarcamada(imagem, velocidade, x, y, largura, altura)
+      //(imagem, velocidade, posY = 0,posX = 0,ImgAltura=0,ImgLargura=0)
+      // a velociedade * como o OFFSET do parallax, cuidado com o valor alto
+
+      parallax.adicionarCamada(imgNuvens, 0.5, 0.5,1,1000); //ta mais lento
+      parallax.adicionarCamada(nuvensLayer3, 1.50, 8,75);
+      parallax.adicionarCamada(nuvensLayer3, 4.50, 75);
+      //parallax.adicionarCamada(imgMuros, 0, 250, 0, 600,1000); //ta mais rapido
+   };
+
+   // Adiciona o parallax à animação
+   animacao.inserirFundo({
+      atualizar: function() {
+         parallax.atualizar();
+      },
+      desenhar: function() {
+         parallax.desenhar();
+      }
+   }, 0);
+
+
 
 // colisor
 var colisor = new Colisor(context, sonic);
@@ -322,7 +366,10 @@ animacao.novoSprite({
             this.context.drawImage(this.imagem, this.x, this.y);
          }
       };
-      animacao.inserirFundo(mapa,0);
+
+      window.hud = new HUD(context, sonic, animacao);
+
+      animacao.inserirFundo(mapa,1);
 
       imgSonic.onload = function() {
          animacao.ligar();
