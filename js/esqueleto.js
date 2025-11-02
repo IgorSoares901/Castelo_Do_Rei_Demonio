@@ -185,6 +185,10 @@ Esqueleto.prototype = {
     this.frameMorte = 0;
     this.hitboxAtiva = false;
     console.log("Mr. Bones se foi");
+    // pontos ao morrer
+    if (window.hud) {
+      window.hud.adicionarPontuacao(250);
+    }
   },
 
     desenhar: function () {

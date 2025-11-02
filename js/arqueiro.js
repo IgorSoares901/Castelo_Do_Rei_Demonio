@@ -181,6 +181,10 @@ morrer: function () {
   this.altura = 0;
 
   console.log("Arqueiro começou a morrer!");
+  // pontos ao morrer
+    if (window.hud) {
+      window.hud.adicionarPontuacao(100);
+    }
 },
 
  desenhar: function () {

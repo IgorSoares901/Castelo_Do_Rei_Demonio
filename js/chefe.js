@@ -298,6 +298,10 @@ morrer: function () {
   this.sheet.intervalo = 120; // mais lento para ver
   this.frameMorte = 0;
   console.log("Godofredo foi pro céu! POGGERS!");
+
+  if (window.hud) {
+      window.hud.adicionarPontuacao(1000);
+    }
 },
 
 animarMorte: function () {

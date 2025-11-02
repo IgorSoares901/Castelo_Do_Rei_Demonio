@@ -78,6 +78,7 @@ Sonic.prototype = {
         if (this.invencivel) {
     // pisca quando leva ataque
     this.alphaPiscar = (Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1; // a cada 100 milesegundos ela ira piscar
+    
     // enquanto esta piscando ela é invencivel
          if (Date.now() > this.tempoInvencivel) {
     this.invencivel = false;
@@ -92,6 +93,10 @@ Sonic.prototype = {
         if (this.sheet.coluna >= 2) {
             this.sheet.coluna = 0;
             this.recebendoDano = false;
+            // perder pontos quando levar dano
+        if (window.hud) {
+          window.hud.adicionarPontuacao(-50);
+          }
 
             // era um bug de reset de estado, então foi criado um reset de estado
             this.andando = false;
