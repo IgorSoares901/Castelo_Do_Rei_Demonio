@@ -77,13 +77,17 @@ Animacao.prototype = {
    },
    desligar: function() {
       this.ligado = false;
+      if (this.frameID) {
+         cancelAnimationFrame(this.frameID); // num duplica frames
+         this.frameID = null;
+      }
    },
 
    inserirFundo: function(sprite,indice) {
        this.sprites.splice(indice,0,sprite);
     },
 
-    proximoFrame: function() {
+   proximoFrame: function() {
       // Posso continuar?
       if ( ! this.ligado ) return;
 
@@ -95,7 +99,7 @@ Animacao.prototype = {
 
       // Se estiver pausado apenas desenha o quadro atual
       if (!this.pausado) {
-          for (var i in this.sprites)
+      for (var i in this.sprites)
          this.sprites[i].atualizar();
       }
        //camera aplicada
@@ -131,7 +135,8 @@ Animacao.prototype = {
 
       // Chamamos o próximo ciclo
       var animacao = this;
-      requestAnimationFrame(function() {
+      // isso aqui é pq vc morre e o requestAnimationFrame continua chamando a animação
+      this.frameID = requestAnimationFrame(function() {
          animacao.proximoFrame();
       });
    },
