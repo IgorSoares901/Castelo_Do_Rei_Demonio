@@ -8,6 +8,11 @@ function HUD(context, heroina, animacao) {
   this.imagemCoracao.src = "imagem/Vida.png"; // aqui vai a imagem do coração
   this.gameOverAtivo = false; // controla se o game over já foi ativado 
   this.tipo = 'hud'; // para identificar na animação
+
+  // som de game over pré-carregado
+  this.somGameOver = new Audio("mp3/game-over.mp3");
+  this.somGameOver.volume = 0.7;
+  this.somGameOver.preload = "auto";
 }
 
 HUD.prototype = {
@@ -56,16 +61,25 @@ HUD.prototype = {
         this.gameOverAtivo = true;
         this.animacao.desligar();
 
-        // tecla pra reiniciar
-        window.addEventListener("keydown",
-          (e) => {
-            if (e.code === "Enter") {
-              this.resetarJogo();
-              //iniciarJogo(); // reinicia tudo
-            }
-          },
-          { once: true }
-        );
+        // pausa a música de fundo global, se existir
+        if (typeof musicaFundo !== "undefined" && musicaFundo && !musicaFundo.paused) {
+        musicaFundo.pause();
+        musicaFundo.currentTime = 0;
+}
+        // toca o som de game over uma vez
+    if (this.somGameOver) {
+      this.somGameOver.currentTime = 0;
+      this.somGameOver.play().catch(() => {});
+    }
+
+       // tecla pra reiniciar agora não buga mais
+      const reiniciarListener = (e) => {
+      if (e.code === "Enter") {
+      this.resetarJogo();
+      window.removeEventListener("keydown", reiniciarListener);
+  }
+};
+      window.addEventListener("keydown", reiniciarListener);
       }
     }
 
@@ -74,6 +88,11 @@ HUD.prototype = {
   },
   
   resetarJogo: function () {
+    // Para o som de game over imediatamente
+    if (this.somGameOver && !this.somGameOver.paused) {
+    this.somGameOver.pause();
+    this.somGameOver.currentTime = 0;
+}
     // Pausa a animação para fazer a limpeza com segurança
     if (this.animacao && typeof this.animacao.desligar === "function")
       this.animacao.desligar();
@@ -218,8 +237,8 @@ HUD.prototype = {
       this.heroina.hp = 5;
       this.heroina.viva = true;
       this.heroina.morrendo = false;
-      this.heroina.x = 100;
-      this.heroina.y = 300;
+      this.heroina.x = -13;
+      this.heroina.y = 330;
       this.heroina.velocidadeY = 0;
       this.heroina.pulando = false;
       this.heroina.invencivel = false;
@@ -268,5 +287,11 @@ HUD.prototype = {
     this.gameOverAtivo = false;
     if (this.animacao && typeof this.animacao.ligar === "function")
       this.animacao.ligar();
+
+    // Retoma a música de fundo principal
+  if (typeof musicaFundo !== "undefined" && musicaFundo) {
+  musicaFundo.currentTime = 0;
+  musicaFundo.play().catch(() => {});
+}
   }
 };

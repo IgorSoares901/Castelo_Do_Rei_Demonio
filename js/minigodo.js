@@ -4,6 +4,15 @@ function Godo(context, imagem, animacao, camera) {
   this.animacao = animacao;
   this.camera = camera;
 
+   // sons pré carregados já no construtor
+  this.somDano = new Audio("mp3/hit.mp3");
+  this.somDano.volume = 0.8;
+  this.somDano.preload = "auto";
+
+  this.somPulo = new Audio("mp3/bounce.mp3");
+  this.somPulo.volume = 0.8;
+  this.somPulo.preload = "auto";
+
   // posição inicial
   this.x = 0;
   this.y = 0;
@@ -168,6 +177,11 @@ Godo.prototype = {
 
   iniciarPulo: function () {
     if (!this.noChao) return;
+    // toca o som de pulo
+    if (this.somPulo) {
+    this.somPulo.currentTime = 0; // reinicia o som
+    this.somPulo.play().catch(() => {}); // executa e ignora erros de autoplay
+    }
     this.noChao = false;
     this.estado = "pulando";
     this.sheet.linha = 0;
@@ -179,6 +193,13 @@ Godo.prototype = {
 
   morrer: function () {
     if (!this.vivo || this.morrendo) return;
+
+    // toca o som pré carregado
+  if (this.somDano) {
+    this.somDano.currentTime = 0; // reinicia o som do início
+    this.somDano.play().catch(() => {});
+  }
+
     this.vivo = false;
     this.morrendo = true;
     this.estado = "morrendo";
