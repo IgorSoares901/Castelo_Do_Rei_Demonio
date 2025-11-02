@@ -4,7 +4,8 @@ var Parallax = function(contexto) {
     this.ctx = contexto;
     this.camadas = [];
     this.offset = 0; // deslocamento global (anda sozinho)
-    };
+    this.tipo = 'parallax'; // para identificar na animação    
+};
 
 
 
