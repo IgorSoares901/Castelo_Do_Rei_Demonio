@@ -32,6 +32,11 @@ function Sonic(context, teclado, imagem) {
    this.hitboxAtaqueDireita = { x: 0, y: 0, largura: 40, altura: 40};
    this.hitboxAtaqueEsquerda = { x: 0, y: 0, largura: 40, altura: 40};
 
+    // son pré carregado já no construtor
+  this.somDano = new Audio("mp3/heroina-dano.mp3");
+  this.somDano.volume = 0.8;
+  this.somDano.preload = "auto";
+
    this.danoAtivo = false; // indica se o ataque pode causar dano
 
    // Criando a spritesheet a partir da imagem recebida
@@ -66,8 +71,8 @@ function Sonic(context, teclado, imagem) {
 } 
 
 Sonic.prototype = { 
-
    atualizar: function() {
+    if (this.respawnTime && Date.now() < this.respawnTime) return;
     if (!this.viva) return;
     //invencibilidade
         if (this.invencivel) {
@@ -87,6 +92,11 @@ Sonic.prototype = {
         if (this.sheet.coluna >= 2) {
             this.sheet.coluna = 0;
             this.recebendoDano = false;
+
+            // era um bug de reset de estado, então foi criado um reset de estado
+            this.andando = false;
+            this.sheet.linha = 1; // idle
+            this.sheet.coluna = 0;
         }
         }
         return; // não faz nada enquanto leva dano
@@ -399,7 +409,6 @@ if (this.velocidadeY >= 0) {
             this.sheet.linha = 1;
             this.sheet.proximoQuadro();
         }
-
     },
 
     // funcao de tomar dano
@@ -407,6 +416,12 @@ if (this.velocidadeY >= 0) {
   if (this.recebendoDano || this.invencivel || this.morrendo || !this.viva) return;
   
   this.hp--;
+
+  // toca o som pré carregado
+  if (this.somDano) {
+    this.somDano.currentTime = 0; // reinicia o som do início
+    this.somDano.play().catch(() => {});
+  }
 
   if(this.hp <= 0) {
     this.morrer();
@@ -469,6 +484,14 @@ respawn: function() {
     // volta para idle
     this.sheet.linha = 1;
     this.sheet.coluna = 0;
+
+    this.pulando = false;
+    this.andando = false;
+    this.atacando = false; // proibindo ela de fazer essas ações um tempo depois do respawn
+
+    
+    this.respawnTime = Date.now() + 100; // 0.1s de atraso antes de responder teclado não irá responder por 0.1 segundos depois do respawn
+
 
     // invencível por 1 segundo ao reaparecer
     this.invencivel = true;

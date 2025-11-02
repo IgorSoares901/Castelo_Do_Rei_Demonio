@@ -4,6 +4,15 @@ function Arqueiro(context, imagem, animacao, camera) {
 
   this.camera = camera; // tive que adicionar a camera ao construtor
 
+   // sons pré carregados já no construtor
+  this.somDano = new Audio("mp3/osso-quebrado.mp3");
+  this.somDano.volume = 0.8;
+  this.somDano.preload = "auto";
+
+  this.somTiro = new Audio("mp3/tiro.mp3");
+  this.somTiro.volume = 0.8;
+  this.somTiro.preload = "auto";
+
   this.colisor = null;
 
   this.velocidadeY = 0; // gravidade
@@ -106,6 +115,11 @@ Arqueiro.prototype = {
 
     // dispara a flecha no quadro 12
     if (this.sheet.coluna ===12 && !this.flechaDisparada) {
+      // toca o som do tiro
+  if (this.somTiro) {
+    this.somTiro.currentTime = 0;
+    this.somTiro.play().catch(() => {});
+  }
         const flecha = new Flecha(
             this.context,
             this.imagemFlecha,
@@ -152,6 +166,11 @@ if (this.hitboxAtiva && window.heroina) {
   },
 morrer: function () {
   if (this.morrendo || !this.vivo) return;
+   // toca o som pré carregado
+  if (this.somDano) {
+    this.somDano.currentTime = 0; // reinicia o som do início
+    this.somDano.play().catch(() => {});
+  }
   this.estado = "morrendo";
   this.morrendo = true;
   this.sheet.linha = 2;

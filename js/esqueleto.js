@@ -3,6 +3,15 @@ function Esqueleto(context, imagem, animacao, camera) {
     this.animacao = animacao;
     this.camera = camera;
 
+     // sons pré carregados já no construtor
+  this.somDano = new Audio("mp3/osso-quebrado.mp3");
+  this.somDano.volume = 0.8;
+  this.somDano.preload = "auto";
+
+  this.somTiro = new Audio("mp3/tiro.mp3");
+  this.somTiro.volume = 0.8;
+  this.somTiro.preload = "auto";
+
     this.sheet = new Spritesheet(context, imagem, 2, 2,[1, 2], 1.7);
     this.sheet.intervalo = 120;
 
@@ -138,6 +147,11 @@ Esqueleto.prototype = {
     // precisa desses offsets pra ajustar de onde sai o osso
     let offsetX, offsetY;
 
+    if (this.somTiro) {
+    this.somTiro.currentTime = 0;
+    this.somTiro.play().catch(() => {});
+  }
+
     if (this.direcao === "direita") {
         offsetX = 25; // muda esses offsets pra fazer o osso sair de partes diferentes do corpo dele
         offsetY = 5; // muda esses offsets pra fazer o osso sair de partes diferentes do corpo dele
@@ -159,6 +173,11 @@ Esqueleto.prototype = {
 
     morrer: function () {
     if (this.morrendo || !this.vivo) return;
+     // toca o som pré carregado
+  if (this.somDano) {
+    this.somDano.currentTime = 0; // reinicia o som do início
+    this.somDano.play().catch(() => {});
+  }
     this.morrendo = true;
     this.estado = "morrendo";
     this.sheet.linha = 1; 
