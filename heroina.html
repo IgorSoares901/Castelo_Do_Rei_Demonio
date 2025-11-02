@@ -16,6 +16,7 @@
    <script src="/Castelo_Do_Rei_Demonio/js/chefe.js"></script>
    <script src="/Castelo_Do_Rei_Demonio/js/parallax.js"></script>
    <script src="/Castelo_Do_Rei_Demonio/js/Hud.js"></script>
+   <script src="/Castelo_Do_Rei_Demonio/js/fim.js"></script>
    <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -39,6 +40,9 @@
             animacao.togglePause();
          }
       });
+
+      var imgTelaInicial = new Image();
+      imgTelaInicial.src = "imagem/parede-porta copia.jpg"
 
       var imgMapa = new Image();
       imgMapa.src = 'imagem/mapa-principal-2 cortado.png'
@@ -68,8 +72,8 @@
       imgChefe.src = "imagem/Chefe.png";
 
       var sonic = new Sonic(context, teclado, imgSonic);
-      sonic.x = -13; 
-      sonic.y = 330; 
+      sonic.x = 4600; 
+      sonic.y = 0; 
       animacao.novoSprite(sonic);
       window.heroina = sonic;
 
@@ -272,15 +276,37 @@ animacao.novoSprite({
 
    // desenha tela inicial
    function desenharTelaInicial() {
-   context.fillStyle = "black";
-   context.fillRect(0, 0, canvas.width, canvas.height);
+  if (imgTelaInicial.complete && imgTelaInicial.naturalWidth > 0) {
+    const imgLargura = imgTelaInicial.naturalWidth;
+    const imgAltura = imgTelaInicial.naturalHeight;
+    const canvasLargura = canvas.width;
+    const canvasAltura = canvas.height;
+    
+    // calcula escala pra caber no canvas mantendo proporção
+    // como não é escala 1:1 corta a imagem nas laterais
+    const escala = Math.max(canvasLargura / imgLargura, canvasAltura / imgAltura);
+    const novaLargura = imgLargura * escala;
+    const novaAltura = imgAltura * escala;
+    
+    // centraliza no canvas
+    const offsetX = (canvasLargura - novaLargura) / 2;
+    const offsetY = (canvasAltura - novaAltura) / 2;
+    
+    context.drawImage(imgTelaInicial, offsetX, offsetY, novaLargura, novaAltura);
+  } else {
+    context.fillStyle = "black";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }// se a imagem não carrega volta pro fundo preto
 
-   context.fillStyle = "white";
-   context.font = "28px Arial";
+  
+
+   context.fillStyle = "red"; // cor do titulo
+   context.font = "italic bold 35px Arial bold"; // fonte arial bold em negrito e italico
    context.textAlign = "center";
    context.fillText("Castelo do Rei Demônio", canvas.width / 2, 180);
 
-   context.font = "16px Arial";
+   context.font = "16px Arial bold"; // fonte do subtexto arial bold
+   context.fillStyle = "white"; // cor da fonte do subtexto
    context.fillText("Pressione ENTER para começar", canvas.width / 2, 260);
    }
 

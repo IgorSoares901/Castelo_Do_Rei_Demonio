@@ -30,12 +30,12 @@ HUD.prototype = {
     }
 
     // Texto de HP
-    ctx.font = "20px Arial";
+    ctx.font = "20px Arial bold";
     ctx.fillStyle = "white";
     ctx.fillText("HP: " + this.heroina.hp, 50, 70);
 
     //espaço para pontuação
-    ctx.fillText("Pontos: " + this.heroina.pontuacao, 105, 100);
+    ctx.fillText("Pontos: " + this.heroina.pontuacao, 100, 100);
 
    // coisa de game over
 
@@ -44,10 +44,10 @@ HUD.prototype = {
       ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.fillStyle = "red";
-      ctx.font = "bold 60px Arial";
+      ctx.font = "italic bold 60px Arial bold";
       ctx.textAlign = "center";
       ctx.fillText("GAME OVER", ctx.canvas.width / 2, ctx.canvas.height / 2);
-      ctx.font = "25px Arial";
+      ctx.font = "25px Arial bold";
       ctx.fillStyle = "white";
       ctx.fillText("Pressione Enter para reiniciar", ctx.canvas.width / 2, ctx.canvas.height / 2 + 60);
 
