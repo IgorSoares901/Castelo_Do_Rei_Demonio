@@ -150,7 +150,7 @@ Chefe.prototype = {
     // como ele tava grudando na parede ao bater nela agora ele fica mais lento e é empurrado
     this.velocidadeX = Math.max(0.5, this.velocidadeX * 0.2);
     //inverter direção para próxima tentativa
-    this.direcao = (this.direcao === "esquerda") ? "direita" : "esquerda";
+    //this.direcao = (this.direcao === "esquerda") ? "direita" : "esquerda"; essa linha de código buga o chefe
       }
     } else {
       // resolver chap e teto
@@ -205,11 +205,11 @@ Chefe.prototype = {
       if (agora >= this.cooldownAtaque) {
        const distancia = hero.x - this.x;
 
-  if (hero.x + 100 < this.x) {
+  if (hero.x - 50 < this.x) {
   this.direcao = "esquerda";
-} else if (hero.x > this.x + 100) {
+} else if (hero.x > this.x + 0) {
   this.direcao = "direita";
-} // coloquei em 100 para ele nunca tentar fugir da heroina kkkk
+} // com esses valores o chefe enfim não foge da heroina
 
   this.iniciarPulo();
 } 
@@ -291,6 +291,80 @@ animarMorte: function () {
     this.animacao.excluirSprite(this);
     this.morrendo = false;
     this.vivo = false;
+
+    // cria o item de vitória no centro do corpo do chefe
+if (typeof Fim === "function") {
+  const imgFim = new Image();
+  imgFim.src = "imagem/fim.png";
+
+  const itemFim = new Fim(this.context, imgFim, this.animacao, window.sonic);
+
+  // Calcula o centro do corpo do chefe
+  const centroX = this.x + this.offsetX + this.largura / 2 - itemFim.largura / 2;
+  const centroY = this.y + this.offsetY + this.altura / 2 - itemFim.altura / 2;
+
+  itemFim.x = centroX;
+  itemFim.y = centroY;
+
+  // adiciona gravidade simples pra ele cair
+  itemFim.velocidadeY = -5; // pequeno impulso pra cima
+  itemFim.gravidade = 0.3;
+  itemFim.colisor = this.colisor;
+
+  // substitui o atualizar() pra incluir a queda
+  itemFim.atualizar = function () {
+    if (this.coletado || !this.ativo) return;
+
+    this.velocidadeY += this.gravidade;
+    this.y += this.velocidadeY;
+
+    // mantém a detecção de colisão com a heroína
+    // verifica colisão com o chão real
+    if (this.colisor && this.colisor.blocos) {
+      for (const b of this.colisor.blocos) {
+        if (b.tipo !== "chao") continue;
+
+        // hitbox do item e do bloco
+        const hb = { x: this.x, y: this.y, largura: this.largura, altura: this.altura };
+        const bb = { x: b.x, y: b.y, largura: b.largura, altura: b.altura };
+
+        // detecção de colisão simples
+        if (
+          hb.x < bb.x + bb.largura &&
+          hb.x + hb.largura > bb.x &&
+          hb.y < bb.y + bb.altura &&
+          hb.y + hb.altura > bb.y
+        ) {
+          // parou em cima do chão
+          this.y = b.y - this.altura;
+          this.velocidadeY = 0;
+          break;
+        }
+      }
+    }
+
+    // colisão com heroína (mesmo de antes)
+    const h = {
+      x: this.heroina.x + 27,
+      y: this.heroina.y + 40,
+      largura: 20,
+      altura: 42
+    };
+    const fim = { x: this.x, y: this.y, largura: this.largura, altura: this.altura };
+
+    if (
+      h.x < fim.x + fim.largura &&
+      h.x + h.largura > fim.x &&
+      h.y < fim.y + fim.altura &&
+      h.y + h.altura > fim.y
+    ) {
+      this.coletar();
+    }
+  };
+
+  this.animacao.novoSprite(itemFim);
+}
+
   }
 },
   desenhar: function () {
