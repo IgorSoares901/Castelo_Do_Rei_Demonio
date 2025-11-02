@@ -8,6 +8,7 @@ function HUD(context, heroina, animacao) {
   this.imagemCoracao.src = "imagem/Vida.png"; // aqui vai a imagem do coração
   this.gameOverAtivo = false; // controla se o game over já foi ativado 
   this.tipo = 'hud'; // para identificar na animação
+  this.pontuacao = 0; // pontuação inicial
 
   // som de game over pré-carregado
   this.somGameOver = new Audio("mp3/game-over.mp3");
@@ -40,7 +41,7 @@ HUD.prototype = {
     ctx.fillText("HP: " + this.heroina.hp, 50, 70);
 
     //espaço para pontuação
-    ctx.fillText("Pontos: " + this.heroina.pontuacao, 100, 100);
+    ctx.fillText("Pontos: " + this.pontuacao, 60, 100);
 
    // coisa de game over
 
@@ -55,6 +56,8 @@ HUD.prototype = {
       ctx.font = "25px Arial bold";
       ctx.fillStyle = "white";
       ctx.fillText("Pressione Enter para reiniciar", ctx.canvas.width / 2, ctx.canvas.height / 2 + 60);
+      // colocar a pontuação final
+      ctx.fillText("Pontuação Final: " + this.pontuacao, ctx.canvas.width / 2, ctx.canvas.height / 2 + 100);
 
       // pausa o jogo e espera o enter para reiniciar
       if (!this.gameOverAtivo) {
@@ -86,7 +89,16 @@ HUD.prototype = {
     // 🔙 Restaura o estado anterior (volta a câmera)
     ctx.restore();
   },
-  
+
+  // metedo para atrituir pontos
+  adicionarPontuacao: function (pontos) {
+    this.pontuacao += pontos;
+  },
+
+  resetarPontuacao: function () {
+    this.pontuacao = 0;
+  },
+
   resetarJogo: function () {
     // Para o som de game over imediatamente
     if (this.somGameOver && !this.somGameOver.paused) {
@@ -146,6 +158,7 @@ HUD.prototype = {
       }
 
       // Mapa: reusa `mapa` global se existir, senão cria um mapa simples
+      // aqui é recriado apenas para garantir que o mapa exista
       if (typeof mapa !== 'undefined') {
         if (this.animacao && typeof this.animacao.inserirFundo === 'function')
           this.animacao.inserirFundo(mapa, 1);
@@ -231,6 +244,8 @@ HUD.prototype = {
     window.godos = [];
     window.chefe = [];
 
+    //reseta a pontuação
+    this.resetarPontuacao();
     // Reseta o estado da heroína
     if (this.heroina) {
       this.heroina.vidas = 3;

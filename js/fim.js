@@ -94,6 +94,8 @@ if (
       ctx.canvas.width / 2,
       ctx.canvas.height / 2 + 50
     );
+      ctx.fillText("Pontuação Final: " + window.hud.pontuacao, ctx.canvas.width / 2, ctx.canvas.height / 2 + 100);
+
     ctx.restore();
   }, 100); // espera 100 ms pra garantir que o loop parou, precisou disso pro texto aparecer
 }

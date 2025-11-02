@@ -207,6 +207,10 @@ Godo.prototype = {
     this.sheet.coluna = 0;
     this.frameMorte = 0;
     console.log("Mini-Godo morreu.");
+    // pontos ao morrer
+    if (window.hud) {
+      window.hud.adicionarPontuacao(50);
+    }
   },
 
   animarMorte: function () {
