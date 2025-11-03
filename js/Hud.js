@@ -4,8 +4,14 @@ function HUD(context, heroina, animacao) {
   this.context = context;
   this.heroina = heroina;
   this.animacao = animacao;
+ 
+ 
   this.imagemCoracao = new Image();
   this.imagemCoracao.src = "imagem/Vida.png"; // aqui vai a imagem do coração
+  this.imagemHP = new Image();
+  this.imagemHP.src = "imagem/carne.png"; // aqui vai a imagem do HP
+ 
+ 
   this.gameOverAtivo = false; // controla se o game over já foi ativado 
   this.tipo = 'hud'; // para identificar na animação
   this.pontuacao = 0; // pontuação inicial
@@ -35,13 +41,26 @@ HUD.prototype = {
       ctx.drawImage(this.imagemCoracao, xInicial + i * espacamento, y, 30, 30);
     }
 
-    // Texto de HP
-    ctx.font = "20px Arial bold";
-    ctx.fillStyle = "white";
-    ctx.fillText("HP: " + this.heroina.hp, 50, 70);
+    //desenha os corações de HP
+    var xHP = xInicial
+    var yHP = y + 40;
+    for (var j = 0; j < this.heroina.hp; j++) {
+      ctx.drawImage(this.imagemHP, xHP + j * espacamento, yHP, 16, 16);
+    }
+
+    // // Texto de HP
+    // ctx.font = "20px Arial bold";
+    // ctx.fillStyle = "white";
+    // ctx.fillText("HP: " + this.heroina.hp, 50, 70);
 
     //espaço para pontuação
+
+    
     ctx.fillText("Pontos: " + this.pontuacao, 60, 100);
+    ctx.font = "25px 'AnotherDanger'";
+    ctx.fillStyle = "white";
+    ctx.fillText("Enter " , 460, 30);
+    
 
    // coisa de game over
 
@@ -49,16 +68,18 @@ HUD.prototype = {
     if (this.heroina.vidas <= 0 && this.heroina.hp <= 0) {
       ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+      ctx.font = "'AnotherDanger' 150px";
       ctx.fillStyle = "red";
-      ctx.font = "italic bold 60px Arial bold";
       ctx.textAlign = "center";
       ctx.fillText("GAME OVER", ctx.canvas.width / 2, ctx.canvas.height / 2);
-      ctx.font = "25px Arial bold";
       ctx.fillStyle = "white";
-      ctx.fillText("Pressione Enter para reiniciar", ctx.canvas.width / 2, ctx.canvas.height / 2 + 60);
+      ctx.font = "19px 'Sancreek'";
+      ctx.fillText("Pressione  Enter  para reiniciar", ctx.canvas.width / 2, ctx.canvas.height / 2 + 60);
       // colocar a pontuação final
+      ctx.font = "19px 'Sancreek'";
       ctx.fillText("Pontuação Final: " + this.pontuacao, ctx.canvas.width / 2, ctx.canvas.height / 2 + 100);
-
+      ctx.fillStyle = "white";
       // pausa o jogo e espera o enter para reiniciar
       if (!this.gameOverAtivo) {
         this.gameOverAtivo = true;
@@ -244,7 +265,7 @@ HUD.prototype = {
     window.godos = [];
     window.chefe = [];
 
-    //reseta a pontuação
+    // Reseta a pontuação
     this.resetarPontuacao();
     // Reseta o estado da heroína
     if (this.heroina) {

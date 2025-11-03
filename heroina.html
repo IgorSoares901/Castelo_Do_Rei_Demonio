@@ -18,9 +18,24 @@
    <script src="/Castelo_Do_Rei_Demonio/js/Hud.js"></script>
    <script src="/Castelo_Do_Rei_Demonio/js/fim.js"></script>
    <link rel="stylesheet" href="styles.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Nosifer&family=Sancreek&display=swap" rel="stylesheet">
+   
 </head>
 
 <body>
+   <div id="info">
+      <h1>Castelo do Rei Demônio</h1>
+      <p>Use as setas do teclado para mover a heroína.</p>
+      <p>Pressione ENTER para pausar o jogo.</p>
+   </div>
+   <!-- div para titulo do jogo -->
+   <div id = container>
+   <div id="titulo">
+      <h1>Castelo do Rei Demônio</h1>
+   </div>
+   <!-- canvas do jogo -->
    <canvas id="canvas_heroina" width="500" height="500"></canvas>
    <script>
       var canvas = document.getElementById('canvas_heroina');
@@ -301,11 +316,11 @@ animacao.novoSprite({
   
 
    context.fillStyle = "red"; // cor do titulo
-   context.font = "italic bold 35px Arial bold"; // fonte arial bold em negrito e italico
+   context.font = "italic bold 35px 'Metal Mania'"; // fonte arial bold em negrito e italico
    context.textAlign = "center";
    context.fillText("Castelo do Rei Demônio", canvas.width / 2, 180);
 
-   context.font = "16px Arial bold"; // fonte do subtexto arial bold
+   context.font = "16px 'Sancreek'"; // fonte do subtexto arial bold
    context.fillStyle = "white"; // cor da fonte do subtexto
    context.fillText("Pressione ENTER para começar", canvas.width / 2, 260);
    }
@@ -332,6 +347,7 @@ animacao.novoSprite({
    // animacao.ligar(); 
    };
       </script>
+      </div>
    </body>
 
 

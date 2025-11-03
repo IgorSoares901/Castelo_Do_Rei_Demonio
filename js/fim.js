@@ -79,7 +79,7 @@ if (
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     ctx.fillStyle = "red";
-    ctx.font = "italic bold 35px Arial bold";
+    ctx.font = "italic bold 35px 'Metal Mania'";;
     ctx.textAlign = "center";
     ctx.fillText(
       "A longa noite chegou a um fim...",
@@ -88,7 +88,7 @@ if (
     );
 
     ctx.fillStyle = "white";
-    ctx.font = "16px Arial bold";
+    ctx.font = "16px 'Sancreek'";
     ctx.fillText(
       "Recarregue a página para jogar novamente",
       ctx.canvas.width / 2,

@@ -23,6 +23,8 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
+
 body {
 	line-height: 1;
 }
@@ -41,6 +43,15 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+/* ------------------------------------------------------------------------ */
+
+@font-face {
+  font-family: 'AnotherDanger';
+  src: url('fonts/Another Danger - Demo.otf') format('opentype');
+}
+
+
+
 
 body{
 	background-image: url('imagem/imagem igor.jpg');
@@ -54,6 +65,53 @@ body{
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+	overflow: hidden;
+}
+
+#titulo {
+	/* border: 5px solid rgb(255, 255, 255); */
+	position: absolute;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 100px;
+	width: 50%;
+	text-align: center;
+	font-size: 60px;
+	background-image: linear-gradient(to right, #b90ab9,#02ffff,#4BF27A );
+	-webkit-background-clip: text;
+	color: transparent;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	animation: animatedText 5s infinite alternate-reverse;
+	font-family: 'Sancreek', sans-serif;
+}
+
+@keyframes animatedText {
+	0% {
+		filter: drop-shadow(0 0 5px #b90ab9);
+	}
+	100% {
+		filter: drop-shadow(0 0 20px #02ffff);
+	}
+}
+
+
+#info {
+	position: absolute;
+	top: 80%;
+	left: 20px;
+	height: 100px;
+	color: white;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	font-size: 20px;
+	line-height: 1.5;
+	text-align: left;
+	
+	/* font-family: 'Nosifer', sans-serif; */
+	font-family: 'Sancreek', sans-serif;
 }
 #canvas_heroina {
 	
