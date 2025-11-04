@@ -69,7 +69,7 @@ HUD.prototype = {
       ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-      ctx.font = "'AnotherDanger' 150px";
+      ctx.font = "50px 'AnotherDanger'";
       ctx.fillStyle = "red";
       ctx.textAlign = "center";
       ctx.fillText("GAME OVER", ctx.canvas.width / 2, ctx.canvas.height / 2);
